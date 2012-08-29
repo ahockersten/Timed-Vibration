@@ -53,9 +53,9 @@ public class MainFragment extends Fragment {
 			public void onClick(View v) {
 				Button self = (Button) v;
 				counting = !counting;
-				
+
 				if (counting) {
-					self.setText("Stop counting"); // FIXME magic string
+					self.setText(R.string.stop_counting);
 					Calendar nextApplicableMinuteSingle = Calendar.getInstance();
 					Calendar nextApplicableMinuteDouble = Calendar.getInstance();
 					Spinner spinSingle = (Spinner) getActivity().findViewById(R.id.spinIntervalSingle);
@@ -65,8 +65,8 @@ public class MainFragment extends Fragment {
 
 					int nextSingleMinute = normalizedMinuteDelay(nextApplicableMinuteSingle.get(Calendar.MINUTE), spinPosToMinutes(spinSingle.getSelectedItemPosition()));
 					int nextDoubleMinute = normalizedMinuteDelay(nextApplicableMinuteDouble.get(Calendar.MINUTE), spinPosToMinutes(spinDouble.getSelectedItemPosition()));
-					nextApplicableMinuteSingle.add(Calendar.MINUTE, nextSingleMinute); // FIXME check so this works correctly for 1 hour case
-					nextApplicableMinuteDouble.add(Calendar.MINUTE, nextDoubleMinute); // FIXME check so this works correctly for 1 hour case
+					nextApplicableMinuteSingle.add(Calendar.MINUTE, nextSingleMinute);
+					nextApplicableMinuteDouble.add(Calendar.MINUTE, nextDoubleMinute);
 					long delaySingle = nextSingleMinute *  60000;
 					long delayDouble = nextDoubleMinute *  60000;
 					nextApplicableMinuteSingle.set(Calendar.SECOND, 0);
@@ -82,7 +82,7 @@ public class MainFragment extends Fragment {
 					executor.scheduleAtFixedRate(new VibrateTwice(), firstDelayDouble, delayDouble, TimeUnit.MILLISECONDS);
 				}
 				else {
-					self.setText("Start counting"); // FIXME magic string
+					self.setText(R.string.start_counting);
 					Spinner spinSingle = (Spinner) getActivity().findViewById(R.id.spinIntervalSingle);
 					Spinner spinDouble = (Spinner) getActivity().findViewById(R.id.spinIntervalDouble);
 					spinSingle.setEnabled(true);

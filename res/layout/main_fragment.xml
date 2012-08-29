@@ -4,40 +4,31 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+	<TextView
+        android:id="@+id/tvIntervalSingle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:text="@+string/interval_to_vibrate_at" />
+	
+    <Spinner
+        android:id="@+id/spinIntervalSingle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    
+    <TextView
+        android:id="@+id/tvIntervalDouble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@+string/interval_to_double_vibrate_at" />
 
-        <TextView
-            android:id="@+id/tvIntervalSingle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Interval to vibrate at" />
+    <Spinner
+        android:id="@+id/spinIntervalDouble"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-        <Spinner
-            android:id="@+id/spinIntervalSingle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        
-        <TextView
-            android:id="@+id/tvIntervalDouble"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Interval to double vibrate at" />
-
-        <Spinner
-            android:id="@+id/spinIntervalDouble"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/btnStart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Start counting" />
-        
-    </LinearLayout>
-
-
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@+string/start_counting" />
 </LinearLayout>
