@@ -60,15 +60,15 @@ public class MainFragment extends Fragment {
 					Calendar nextApplicableMinuteDouble = Calendar.getInstance();
 					Spinner spinSingle = (Spinner) getActivity().findViewById(R.id.spinIntervalSingle);
 					Spinner spinDouble = (Spinner) getActivity().findViewById(R.id.spinIntervalDouble);
-					
-					int spinSingleMinute = spinPosToMinutes(spinSingle.getSelectedItemPosition());
-					int spinDoubleMinute = spinPosToMinutes(spinDouble.getSelectedItemPosition());
-					// FIXME this is wrong. It should match up to *even* places, like 10:00, 10:02, 10:05, 10:10, 10:30, 11:00 etc
-					nextApplicableMinuteSingle.roll(Calendar.MINUTE, spinSingleMinute); // FIXME check so this works correctly for 1 hour case
-					// FIXME this is wrong. It should match up to *even* places, like 10:00, 10:02, 10:05, 10:10, 10:30, 11:00 etc
-					nextApplicableMinuteDouble.roll(Calendar.MINUTE, spinDoubleMinute); // FIXME check so this works correctly for 1 hour case
-					long delaySingle = spinSingleMinute *  60000;
-					long delayDouble = spinDoubleMinute *  60000;
+					spinSingle.setEnabled(false);
+					spinDouble.setEnabled(false);
+
+					int nextSingleMinute = normalizedMinuteDelay(nextApplicableMinuteSingle.get(Calendar.MINUTE), spinPosToMinutes(spinSingle.getSelectedItemPosition()));
+					int nextDoubleMinute = normalizedMinuteDelay(nextApplicableMinuteDouble.get(Calendar.MINUTE), spinPosToMinutes(spinDouble.getSelectedItemPosition()));
+					nextApplicableMinuteSingle.add(Calendar.MINUTE, nextSingleMinute); // FIXME check so this works correctly for 1 hour case
+					nextApplicableMinuteDouble.add(Calendar.MINUTE, nextDoubleMinute); // FIXME check so this works correctly for 1 hour case
+					long delaySingle = nextSingleMinute *  60000;
+					long delayDouble = nextDoubleMinute *  60000;
 					nextApplicableMinuteSingle.set(Calendar.SECOND, 0);
 					nextApplicableMinuteSingle.set(Calendar.MILLISECOND, 0);
 					nextApplicableMinuteDouble.set(Calendar.SECOND, 0);
@@ -83,6 +83,10 @@ public class MainFragment extends Fragment {
 				}
 				else {
 					self.setText("Start counting"); // FIXME magic string
+					Spinner spinSingle = (Spinner) getActivity().findViewById(R.id.spinIntervalSingle);
+					Spinner spinDouble = (Spinner) getActivity().findViewById(R.id.spinIntervalDouble);
+					spinSingle.setEnabled(true);
+					spinDouble.setEnabled(true);
 					executor.shutdown();
 					executor = new ScheduledThreadPoolExecutor(2);
 				}
@@ -92,22 +96,21 @@ public class MainFragment extends Fragment {
 		super.onResume();
 	}
 	
+	private int normalizedMinuteDelay(int currentMinute, int delay) {
+		return delay - currentMinute % delay;
+	}
+	
 	private int spinPosToMinutes(int spinPos) {
 		switch (spinPos) {
 		case 0:
-	        // 1 minute
 			return 1;
 		case 1:
-			// 2 minutes
 			return 2;
 		case 2:
-			// 5 minutes
 			return 5;
 		case 3:
-			// 10 minutes
 			return 10;
 		case 4:
-			// 15 minutes
 			return 15;
 		case 5:
 			return 30;
