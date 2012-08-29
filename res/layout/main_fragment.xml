@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tvIntervalSingle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Interval to vibrate at" />
+
+        <Spinner
+            android:id="@+id/spinIntervalSingle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        
+        <TextView
+            android:id="@+id/tvIntervalDouble"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Interval to double vibrate at" />
+
+        <Spinner
+            android:id="@+id/spinIntervalDouble"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start counting" />
+        
+    </LinearLayout>
+
+
+</LinearLayout>
