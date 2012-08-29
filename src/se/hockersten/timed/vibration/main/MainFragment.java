@@ -1,11 +1,13 @@
 package se.hockersten.timed.vibration.main;
 
 import java.util.Calendar;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import se.hockersten.timed.vibration.R;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -19,17 +21,17 @@ import android.widget.Spinner;
 
 public class MainFragment extends Fragment {
 	private boolean counting = false;
-	private ScheduledThreadPoolExecutor executor;
+	private PendingIntent vibrateOnceTask;
+	private PendingIntent vibrateTwiceTask;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		executor = new ScheduledThreadPoolExecutor(2); // 2 should be enough for now
-		return inflater.inflate(R.layout.main_fragment, container, false);
-	}
-	
-	@Override
-	public void onResume() {
-		Spinner spinner = (Spinner) getActivity().findViewById(R.id.spinIntervalSingle);
+		if (savedInstanceState == null) {
+		}
+		
+		View v = inflater.inflate(R.layout.main_fragment, container, false);
+		
+		Spinner spinner = (Spinner) v.findViewById(R.id.spinIntervalSingle);
 		// Create an ArrayAdapter using the string array and a default spinner layout
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
 		        R.array.time_array, android.R.layout.simple_spinner_item);
@@ -38,7 +40,7 @@ public class MainFragment extends Fragment {
 		// Apply the adapter to the spinner
 		spinner.setAdapter(adapter);
 		
-		Spinner spinner2 = (Spinner) getActivity().findViewById(R.id.spinIntervalDouble);
+		Spinner spinner2 = (Spinner) v.findViewById(R.id.spinIntervalDouble);
 		// Create an ArrayAdapter using the string array and a default spinner layout
 		ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(),
 		        R.array.time_array, android.R.layout.simple_spinner_item);
@@ -47,6 +49,11 @@ public class MainFragment extends Fragment {
 		// Apply the adapter to the spinner
 		spinner2.setAdapter(adapter2);
 		
+		return v;
+	}
+	
+	@Override
+	public void onResume() {
 		Button startBtn = (Button) getActivity().findViewById(R.id.btnStart);
 		
 		startBtn.setOnClickListener(new OnClickListener() {
@@ -56,13 +63,13 @@ public class MainFragment extends Fragment {
 
 				if (counting) {
 					self.setText(R.string.stop_counting);
-					Calendar nextApplicableMinuteSingle = Calendar.getInstance();
-					Calendar nextApplicableMinuteDouble = Calendar.getInstance();
 					Spinner spinSingle = (Spinner) getActivity().findViewById(R.id.spinIntervalSingle);
 					Spinner spinDouble = (Spinner) getActivity().findViewById(R.id.spinIntervalDouble);
 					spinSingle.setEnabled(false);
 					spinDouble.setEnabled(false);
 
+					Calendar nextApplicableMinuteSingle = Calendar.getInstance();
+					Calendar nextApplicableMinuteDouble = Calendar.getInstance();
 					int nextSingleMinute = normalizedMinuteDelay(nextApplicableMinuteSingle.get(Calendar.MINUTE), spinPosToMinutes(spinSingle.getSelectedItemPosition()));
 					int nextDoubleMinute = normalizedMinuteDelay(nextApplicableMinuteDouble.get(Calendar.MINUTE), spinPosToMinutes(spinDouble.getSelectedItemPosition()));
 					nextApplicableMinuteSingle.add(Calendar.MINUTE, nextSingleMinute);
@@ -74,12 +81,20 @@ public class MainFragment extends Fragment {
 					nextApplicableMinuteDouble.set(Calendar.SECOND, 0);
 					nextApplicableMinuteDouble.set(Calendar.MILLISECOND, 0);
 					
-					Calendar now = Calendar.getInstance();
-					long firstDelaySingle = nextApplicableMinuteSingle.getTimeInMillis() - now.getTimeInMillis();
-					long firstDelayDouble = nextApplicableMinuteDouble.getTimeInMillis() - now.getTimeInMillis();
+					long firstVibrationSingle = nextApplicableMinuteSingle.getTimeInMillis();
+					long firstVibrationDouble = nextApplicableMinuteDouble.getTimeInMillis();
 					
-					executor.scheduleAtFixedRate(new VibrateOnce(), firstDelaySingle, delaySingle, TimeUnit.MILLISECONDS);
-					executor.scheduleAtFixedRate(new VibrateTwice(), firstDelayDouble, delayDouble, TimeUnit.MILLISECONDS);
+					AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+					Intent i1 = new Intent(getActivity(), VibrateOnce.class);
+					Intent i2 = new Intent(getActivity(), VibrateTwice.class);
+					
+					vibrateOnceTask = PendingIntent.getBroadcast(getActivity(), 0, i1, 0);
+					vibrateTwiceTask = PendingIntent.getBroadcast(getActivity(), 0, i2, 0);
+					alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibrationSingle, delaySingle, vibrateOnceTask);
+					alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibrationDouble, delayDouble, vibrateTwiceTask);
+					// DEBUG: Vibrate after 2 and 5 seconds instead
+					//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 2000, delaySingle, vibrateOnceTask);
+					//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, delayDouble, vibrateTwiceTask);
 				}
 				else {
 					self.setText(R.string.start_counting);
@@ -87,8 +102,12 @@ public class MainFragment extends Fragment {
 					Spinner spinDouble = (Spinner) getActivity().findViewById(R.id.spinIntervalDouble);
 					spinSingle.setEnabled(true);
 					spinDouble.setEnabled(true);
-					executor.shutdown();
-					executor = new ScheduledThreadPoolExecutor(2);
+
+					AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+					alarmManager.cancel(vibrateOnceTask);
+					alarmManager.cancel(vibrateTwiceTask);
+					vibrateOnceTask = null;
+					vibrateTwiceTask = null;
 				}
 			}
 		});
@@ -103,41 +122,25 @@ public class MainFragment extends Fragment {
 	private int spinPosToMinutes(int spinPos) {
 		switch (spinPos) {
 		case 0:
-			return 1;
+			return -1;
 		case 1:
-			return 2;
+			return 1;
 		case 2:
-			return 5;
+			return 2;
 		case 3:
-			return 10;
+			return 5;
 		case 4:
-			return 15;
+			return 10;
 		case 5:
-			return 30;
+			return 15;
 		case 6:
+			return 30;
+		case 7:
 			return 60;
 		default:
 			// how the fuck did we end up here?
 			assert(false);
 			return -1;
-		}
-	}
-	
-	private class VibrateOnce implements Runnable {
-		@Override
-		public void run() {
-			Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-			long[] pattern = { 0, 100 };
-			vibrator.vibrate(pattern, -1);
-		}
-	}
-	
-	private class VibrateTwice implements Runnable {
-		@Override
-		public void run() {
-			Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-			long[] pattern = { 0, 100, 100, 100 };
-			vibrator.vibrate(pattern, -1);
 		}
 	}
 }
