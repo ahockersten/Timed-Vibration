@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 // TODO
-// add Swedish translation
 // add configuration of vibrations
 // beautify the UI more
 // add feature: active time measurement (aka "competition mode")
@@ -33,9 +32,9 @@ public class MainFragment extends Fragment {
 	private boolean counting = false;
 	private PendingIntent vibrateOnceTask;
 	private PendingIntent vibrateTwiceTask;
-	private int spinSinglePos = 1;
-	private int spinDoublePos = 3;
-
+	private int spinSinglePos = 1; // 1 minute by default
+	private int spinDoublePos = 3; // 5 minutes by default 
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		if (savedInstanceState != null) {
@@ -86,11 +85,11 @@ public class MainFragment extends Fragment {
 			public void onClick(View v) {
 				Spinner spinSingle = (Spinner) getActivity().findViewById(R.id.spinIntervalSingle);
 				Spinner spinDouble = (Spinner) getActivity().findViewById(R.id.spinIntervalDouble);
+				AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 				counting = !counting;
 
 				updateUI(getActivity().findViewById(android.R.id.content));
 				if (counting) {
-					AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 
 					// FIXME: lots of code that could potentially be reused here (but does it make it any clearer?)
 					int singleMinutes = spinPosToMinutes(spinSingle.getSelectedItemPosition());
@@ -125,7 +124,6 @@ public class MainFragment extends Fragment {
 					//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, 10000, vibrateTwiceTask);
 				}
 				else {
-					AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 					alarmManager.cancel(vibrateOnceTask);
 					alarmManager.cancel(vibrateTwiceTask);
 					vibrateOnceTask = null;
