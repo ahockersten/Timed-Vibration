@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 // TODO
-// set something different from "disabled" by default
 // add Swedish translation
 // add configuration of vibrations
 // beautify the UI more
@@ -28,10 +27,14 @@ public class MainFragment extends Fragment {
 	private static String COUNTING = "COUNTING";
 	private static String VIBRATE_ONCE_TASK = "VIBRATE_ONCE_TASK";
 	private static String VIBRATE_TWICE_TASK = "VIBRATE_TWICE_TASK";
+	private static String SPIN_SINGLE_POS = "SPIN_SINGLE_POS";
+	private static String SPIN_DOUBLE_POS = "SPIN_DOUBLE_POS";
 	
 	private boolean counting = false;
 	private PendingIntent vibrateOnceTask;
 	private PendingIntent vibrateTwiceTask;
+	private int spinSinglePos = 1;
+	private int spinDoublePos = 3;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,6 +42,8 @@ public class MainFragment extends Fragment {
 			counting = savedInstanceState.getBoolean(COUNTING);
 			vibrateOnceTask = savedInstanceState.getParcelable(VIBRATE_ONCE_TASK);
 			vibrateTwiceTask = savedInstanceState.getParcelable(VIBRATE_TWICE_TASK);
+			spinSinglePos = savedInstanceState.getInt(SPIN_SINGLE_POS);
+			spinDoublePos = savedInstanceState.getInt(SPIN_DOUBLE_POS);
 		}
 		
 		View v = inflater.inflate(R.layout.main_fragment, container, false);
@@ -71,6 +76,8 @@ public class MainFragment extends Fragment {
 		b.putBoolean(COUNTING, counting);
 		b.putParcelable(VIBRATE_ONCE_TASK, vibrateOnceTask);
 		b.putParcelable(VIBRATE_TWICE_TASK, vibrateTwiceTask);
+		b.putInt(SPIN_SINGLE_POS, spinSinglePos);
+		b.putInt(SPIN_DOUBLE_POS, spinDoublePos);
 	}
 	
 	@Override
@@ -85,34 +92,39 @@ public class MainFragment extends Fragment {
 
 				if (counting) {
 					updateUI(getActivity().findViewById(android.R.id.content));
-
-					Calendar nextApplicableMinuteSingle = Calendar.getInstance();
-					Calendar nextApplicableMinuteDouble = Calendar.getInstance();
-					int nextSingleMinute = normalizedMinuteDelay(nextApplicableMinuteSingle.get(Calendar.MINUTE), spinPosToMinutes(spinSingle.getSelectedItemPosition()));
-					int nextDoubleMinute = normalizedMinuteDelay(nextApplicableMinuteDouble.get(Calendar.MINUTE), spinPosToMinutes(spinDouble.getSelectedItemPosition()));
-					nextApplicableMinuteSingle.add(Calendar.MINUTE, nextSingleMinute);
-					nextApplicableMinuteDouble.add(Calendar.MINUTE, nextDoubleMinute);
-					long delaySingle = nextSingleMinute *  60000;
-					long delayDouble = nextDoubleMinute *  60000;
-					nextApplicableMinuteSingle.set(Calendar.SECOND, 0);
-					nextApplicableMinuteSingle.set(Calendar.MILLISECOND, 0);
-					nextApplicableMinuteDouble.set(Calendar.SECOND, 0);
-					nextApplicableMinuteDouble.set(Calendar.MILLISECOND, 0);
-					
-					long firstVibrationSingle = nextApplicableMinuteSingle.getTimeInMillis();
-					long firstVibrationDouble = nextApplicableMinuteDouble.getTimeInMillis();
-					
 					AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-					Intent i1 = new Intent(getActivity(), VibrateOnce.class);
-					Intent i2 = new Intent(getActivity(), VibrateTwice.class);
+
+					// FIXME: lots of code that could potentially be reused here (but does it make it any clearer?)
+					int singleMinutes = spinPosToMinutes(spinSingle.getSelectedItemPosition());
+					if (singleMinutes != -1) {
+						Calendar nextApplicableMinuteSingle = Calendar.getInstance();
+						int nextSingleMinute = normalizedMinuteDelay(nextApplicableMinuteSingle.get(Calendar.MINUTE), spinPosToMinutes(singleMinutes));
+						nextApplicableMinuteSingle.add(Calendar.MINUTE, nextSingleMinute);
+						long delaySingle = nextSingleMinute *  60000;
+						nextApplicableMinuteSingle.set(Calendar.SECOND, 0);
+						nextApplicableMinuteSingle.set(Calendar.MILLISECOND, 0);
+						long firstVibrationSingle = nextApplicableMinuteSingle.getTimeInMillis();
+						Intent i1 = new Intent(getActivity(), VibrateOnce.class);
+						vibrateOnceTask = PendingIntent.getBroadcast(getActivity(), 0, i1, 0);
+						alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibrationSingle, delaySingle, vibrateOnceTask);
+					}
 					
-					vibrateOnceTask = PendingIntent.getBroadcast(getActivity(), 0, i1, 0);
-					vibrateTwiceTask = PendingIntent.getBroadcast(getActivity(), 0, i2, 0);
-					alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibrationSingle, delaySingle, vibrateOnceTask);
-					alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibrationDouble, delayDouble, vibrateTwiceTask);
-					// DEBUG: Vibrate after 2 and 5 seconds instead
-					//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 2000, delaySingle, vibrateOnceTask);
-					//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, delayDouble, vibrateTwiceTask);
+					int doubleMinutes = spinPosToMinutes(spinDouble.getSelectedItemPosition());
+					if (doubleMinutes != -1) {
+						Calendar nextApplicableMinuteDouble = Calendar.getInstance();
+						int nextDoubleMinute = normalizedMinuteDelay(nextApplicableMinuteDouble.get(Calendar.MINUTE), spinPosToMinutes(doubleMinutes));
+						nextApplicableMinuteDouble.add(Calendar.MINUTE, nextDoubleMinute);
+						long delayDouble = nextDoubleMinute *  60000;
+						nextApplicableMinuteDouble.set(Calendar.SECOND, 0);
+						nextApplicableMinuteDouble.set(Calendar.MILLISECOND, 0);
+						long firstVibrationDouble = nextApplicableMinuteDouble.getTimeInMillis();
+						Intent i2 = new Intent(getActivity(), VibrateTwice.class);
+						vibrateTwiceTask = PendingIntent.getBroadcast(getActivity(), 0, i2, 0);
+						alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibrationDouble, delayDouble, vibrateTwiceTask);
+					}
+					// DEBUG: Vibrate after 2 and 5 seconds instead, and then every 10 seconds (this won't work if fields are set to disabled)
+					//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 2000, 10000, vibrateOnceTask);
+					//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, 10000, vibrateTwiceTask);
 				}
 				else {
 					updateUI(getActivity().findViewById(android.R.id.content));
@@ -134,6 +146,8 @@ public class MainFragment extends Fragment {
 		Spinner spinDouble = (Spinner) v.findViewById(R.id.spinIntervalDouble);
 		spinSingle.setEnabled(!counting);
 		spinDouble.setEnabled(!counting);
+		spinSingle.setSelection(spinSinglePos);
+		spinDouble.setSelection(spinDoublePos);
 		if (counting) {
 			startBtn.setText(R.string.stop_counting);
 		}
