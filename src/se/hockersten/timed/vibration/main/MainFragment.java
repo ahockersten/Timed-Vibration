@@ -29,13 +29,13 @@ public class MainFragment extends Fragment {
 	private static String VIBRATE_TWICE_TASK = "VIBRATE_TWICE_TASK";
 	private static String SPIN_SINGLE_POS = "SPIN_SINGLE_POS";
 	private static String SPIN_DOUBLE_POS = "SPIN_DOUBLE_POS";
-	
+
 	private boolean counting = false;
 	private PendingIntent vibrateOnceTask;
 	private PendingIntent vibrateTwiceTask;
 	private int spinSinglePos = 1;
 	private int spinDoublePos = 3;
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		if (savedInstanceState != null) {
@@ -45,9 +45,9 @@ public class MainFragment extends Fragment {
 			spinSinglePos = savedInstanceState.getInt(SPIN_SINGLE_POS);
 			spinDoublePos = savedInstanceState.getInt(SPIN_DOUBLE_POS);
 		}
-		
+
 		View v = inflater.inflate(R.layout.main_fragment, container, false);
-		
+
 		Spinner spinner = (Spinner) v.findViewById(R.id.spinIntervalSingle);
 		// Create an ArrayAdapter using the string array and a default spinner layout
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
@@ -56,7 +56,7 @@ public class MainFragment extends Fragment {
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// Apply the adapter to the spinner
 		spinner.setAdapter(adapter);
-		
+
 		Spinner spinner2 = (Spinner) v.findViewById(R.id.spinIntervalDouble);
 		// Create an ArrayAdapter using the string array and a default spinner layout
 		ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(),
@@ -65,12 +65,11 @@ public class MainFragment extends Fragment {
 		adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// Apply the adapter to the spinner
 		spinner2.setAdapter(adapter2);
-		
+
 		updateUI(v);
-		
 		return v;
 	}
-	
+
 	@Override
 	public void onSaveInstanceState(Bundle b) {
 		b.putBoolean(COUNTING, counting);
@@ -79,19 +78,18 @@ public class MainFragment extends Fragment {
 		b.putInt(SPIN_SINGLE_POS, spinSinglePos);
 		b.putInt(SPIN_DOUBLE_POS, spinDoublePos);
 	}
-	
+
 	@Override
 	public void onResume() {
 		Button startBtn = (Button) getActivity().findViewById(R.id.btnStart);
-		
 		startBtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				Spinner spinSingle = (Spinner) getActivity().findViewById(R.id.spinIntervalSingle);
 				Spinner spinDouble = (Spinner) getActivity().findViewById(R.id.spinIntervalDouble);
 				counting = !counting;
 
+				updateUI(getActivity().findViewById(android.R.id.content));
 				if (counting) {
-					updateUI(getActivity().findViewById(android.R.id.content));
 					AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 
 					// FIXME: lots of code that could potentially be reused here (but does it make it any clearer?)
@@ -108,7 +106,7 @@ public class MainFragment extends Fragment {
 						vibrateOnceTask = PendingIntent.getBroadcast(getActivity(), 0, i1, 0);
 						alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibrationSingle, delaySingle, vibrateOnceTask);
 					}
-					
+
 					int doubleMinutes = spinPosToMinutes(spinDouble.getSelectedItemPosition());
 					if (doubleMinutes != -1) {
 						Calendar nextApplicableMinuteDouble = Calendar.getInstance();
@@ -127,7 +125,6 @@ public class MainFragment extends Fragment {
 					//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, 10000, vibrateTwiceTask);
 				}
 				else {
-					updateUI(getActivity().findViewById(android.R.id.content));
 					AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 					alarmManager.cancel(vibrateOnceTask);
 					alarmManager.cancel(vibrateTwiceTask);
@@ -136,10 +133,10 @@ public class MainFragment extends Fragment {
 				}
 			}
 		});
-		
+
 		super.onResume();
 	}
-	
+
 	private void updateUI(View v) {
 		Button startBtn = (Button) v.findViewById(R.id.btnStart);
 		Spinner spinSingle = (Spinner) v.findViewById(R.id.spinIntervalSingle);
@@ -155,11 +152,11 @@ public class MainFragment extends Fragment {
 			startBtn.setText(R.string.start_counting);
 		}
 	}
-	
+
 	private int normalizedMinuteDelay(int currentMinute, int delay) {
 		return delay - currentMinute % delay;
 	}
-	
+
 	private int spinPosToMinutes(int spinPos) {
 		switch (spinPos) {
 		case 0:
