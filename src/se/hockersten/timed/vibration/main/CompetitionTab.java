@@ -73,7 +73,6 @@ public class CompetitionTab extends Fragment {
 				Resources res = getResources();
 				lastResultTv.setText(res.getString(R.string.last_result) + " " + minDiff + " minutes, " + secDiff + " seconds, " + milliDiff + " milliseconds"); // FIXME magic strings
 				
-				// (play a little ding when you're "close enough"?, and something else when failing?)
 				lastPress = currentTime;
 			}
 		});
