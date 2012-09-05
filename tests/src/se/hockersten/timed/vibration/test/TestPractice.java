@@ -44,7 +44,6 @@ public class TestPractice extends AndroidTestCase {
 			method.setAccessible(true);
 			return (Integer) method.invoke(null, currentMinute, delay);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return -1;
 		}
