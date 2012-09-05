@@ -44,21 +44,15 @@ public class PracticeTab extends Fragment {
 		root = inflater.inflate(R.layout.main_practice, container, false);
 
 		Spinner spinner = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalSingle);
-		// Create an ArrayAdapter using the string array and a default spinner layout
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
 		        R.array.time_array, android.R.layout.simple_spinner_item);
-		// Specify the layout to use when the list of choices appears
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		// Apply the adapter to the spinner
 		spinner.setAdapter(adapter);
 
 		Spinner spinner2 = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalDouble);
-		// Create an ArrayAdapter using the string array and a default spinner layout
 		ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(),
 		        R.array.time_array, android.R.layout.simple_spinner_item);
-		// Specify the layout to use when the list of choices appears
 		adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		// Apply the adapter to the spinner
 		spinner2.setAdapter(adapter2);
 
 		updateUI();
