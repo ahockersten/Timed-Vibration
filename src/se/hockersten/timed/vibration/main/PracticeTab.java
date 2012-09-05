@@ -188,7 +188,7 @@ public class PracticeTab extends Fragment {
 		case 7:
 			return 60;
 		default:
-			// how the fuck did we end up here?
+			// how did we end up here?
 			assert(false);
 			return -1;
 		}
