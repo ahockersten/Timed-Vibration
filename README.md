@@ -44,6 +44,7 @@ Future improvements
 "Competition mode"
 - Add some kind of history to "Competition mode"
 - Make the UI prettier
+- The "tap me" button should be a pretty icon instead of a button
 
  Todo before public release
  -------------------
