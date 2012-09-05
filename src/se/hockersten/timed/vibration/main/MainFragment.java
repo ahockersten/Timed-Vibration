@@ -28,10 +28,6 @@ import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 
-// TODO
-// add configuration of vibrations
-// beautify the UI more
-
 public class MainFragment extends Fragment implements OnTabChangeListener {
     private static final String TAB_PRACTICE = "PRACTICE";
     private static final String TAB_COMPETITION = "COMPETITION";

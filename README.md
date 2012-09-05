@@ -43,7 +43,8 @@ Future improvements
 - Add a sound that plays when you are close to a set goal in 
 "Competition mode"
 - Add some kind of history to "Competition mode"
- 
+- Make the UI prettier
+
  Todo before public release
  -------------------
  - Draw some kind of placeholder icon
