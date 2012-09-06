@@ -31,10 +31,6 @@ Future improvements
 - Make the UI prettier
 - The "tap me" button should be a pretty icon instead of a button
 
-Todo before public release
--------------------
-- Draw some kind of placeholder icon
- 
 Author info
 ===========
 You may reach me at anders@hockersten.se
