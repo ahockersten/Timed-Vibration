@@ -27,7 +27,6 @@ Future improvements
 - Add a proper icon
 - Add a sound that plays when you are close to a set goal in 
 "Competition mode"
-- Add some kind of history to "Competition mode"
 - Make the UI prettier
 - The "tap me" button should be a pretty icon instead of a button
 

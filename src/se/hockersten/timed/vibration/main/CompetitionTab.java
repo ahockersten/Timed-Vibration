@@ -18,6 +18,7 @@
 package se.hockersten.timed.vibration.main;
 
 import java.util.Calendar;
+import java.util.LinkedList;
 
 import se.hockersten.timed.vibration.R;
 import android.content.Context;
@@ -39,6 +40,7 @@ public class CompetitionTab extends Fragment {
 	private boolean competing;
 	private Calendar lastPress;
 	private PowerManager.WakeLock wakeLock;
+	private LinkedList<Long> tapTimes;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class CompetitionTab extends Fragment {
 		}
 
 		root = inflater.inflate(R.layout.main_competition, container, false);
+		tapTimes = new LinkedList<Long>(); // FIXME needs to be in bundle
 		updateUI();
 		return root;
 	}
@@ -60,7 +63,8 @@ public class CompetitionTab extends Fragment {
 	@Override
 	public void onResume() {
 		PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
-		wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag"); // FIXME proper tag
+		wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CompetitionTab.onResume()");
+		tapTimes = new LinkedList<Long>();
 		
 		Button startBtn = (Button) root.findViewById(R.id.mainCompetition_btnStart);
 		startBtn.setOnClickListener(new OnClickListener() {
@@ -83,14 +87,13 @@ public class CompetitionTab extends Fragment {
 				Calendar currentTime = Calendar.getInstance();
 				
 				long timeDiff = currentTime.getTimeInMillis() - lastPress.getTimeInMillis();
-				TextView lastResultTv = (TextView) root.findViewById(R.id.mainCompetition_tvLastResult);
-				long minDiff = timeDiff / 60000;
-				long secDiff = timeDiff / 1000 - minDiff * 60;
-				long milliDiff = timeDiff - secDiff * 1000 - minDiff * 60000;
-				Resources res = getResources();
-				lastResultTv.setText(res.getString(R.string.last_result) + " " + minDiff + " minutes, " + secDiff + " seconds, " + milliDiff + " milliseconds"); // FIXME magic strings
-				
+				if (tapTimes.size() > 4) {
+					tapTimes.removeLast();
+				}
+				tapTimes.addFirst(timeDiff);
 				lastPress = currentTime;
+				
+				updateUI();
 			}
 		});
 		super.onResume();
@@ -115,5 +118,17 @@ public class CompetitionTab extends Fragment {
 		else {
 			startBtn.setText(R.string.start_counting);
 		}
+		Resources res = getResources();
+		StringBuffer resultText = new StringBuffer(res.getString(R.string.last_results));
+		for (long tapTime : tapTimes) {
+			long minDiff = tapTime / 60000;
+			long secDiff = tapTime / 1000 - minDiff * 60;
+			long milliDiff = tapTime - secDiff * 1000 - minDiff * 60000;
+			resultText.append("\n" + minDiff + " " + res.getString(R.string.minutes) + ", " + 
+					 		  secDiff + " " + res.getString(R.string.seconds) + ", " + 
+					 		  milliDiff + " " + res.getString(R.string.milliseconds));
+		}
+		TextView lastResultTv = (TextView) root.findViewById(R.id.mainCompetition_tvLastResult);
+		lastResultTv.setText(resultText);
 	}
 }
