@@ -17,8 +17,6 @@
 
 package se.hockersten.timed.vibration.main;
 
-import java.util.ArrayList;
-
 import se.hockersten.timed.vibration.R;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -31,15 +29,12 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 
 public class MainFragment extends Fragment implements OnTabChangeListener {
-    private static final String TAB_PRACTICE = "PRACTICE";
+	private static final String TAB_PRACTICE = "PRACTICE";
     private static final String TAB_COMPETITION = "COMPETITION";
-    private static final int TAB_PRACTICE_ID = 0;
-    private static final int TAB_COMPETITION_ID = 1;
 
     private View root;
     private TabHost host;
-    private ArrayList<Tab> tabs;
-    private int currentTab;
+    private String currentTab = TAB_PRACTICE;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,7 +43,6 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
 
 		root = inflater.inflate(R.layout.main_fragment, container, false);
         host = (TabHost) root.findViewById(android.R.id.tabhost);
-        tabs = new ArrayList<Tab>(2);
 
         host.setup();
         host.addTab(newTab(TAB_PRACTICE, "Practice", R.id.mainFragment_tabPractice)); // FIXME magic string 
@@ -73,9 +67,9 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
         setRetainInstance(true);
         
         host.setOnTabChangedListener(this);
-		host.setCurrentTab(currentTab);
-        updateTab(TAB_PRACTICE, R.id.mainFragment_tabPractice);
-		updateTab(TAB_COMPETITION, R.id.mainFragment_tabCompetition);
+		host.setCurrentTabByTag(currentTab);
+		
+        updateTab(currentTab);
     }
     
     private TabSpec newTab(String tag, String labelId, int tabContentId) {
@@ -88,40 +82,40 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
     @Override
     public void onTabChanged(String tabId) {
         if (TAB_PRACTICE.equals(tabId)) {
-            updateTab(tabId, R.id.mainFragment_tabPractice);
-            currentTab = TAB_PRACTICE_ID;
+            updateTab(tabId);
+            currentTab = TAB_PRACTICE;
         }
         if (TAB_COMPETITION.equals(tabId)) {
-            updateTab(tabId, R.id.mainFragment_tabCompetition);
-            currentTab = TAB_COMPETITION_ID;
-        }
-        for (int i = 0; i < tabs.size(); i++) {
-        	if (i == currentTab) {
-            	tabs.get(i).onTabVisible();
-        	}
-        	else {
-        		tabs.get(i).onTabInvisible();
-        	}
+            updateTab(tabId);
+            currentTab = TAB_COMPETITION;
         }
     }
  
-    private void updateTab(String tabId, int placeholder) {
+    private void updateTab(String tabId) {
         FragmentManager fm = getFragmentManager();
-        if (fm.findFragmentByTag(tabId) == null) {
+        Tab oldTab = (Tab) fm.findFragmentByTag(currentTab);
+        Tab newTab = (Tab) fm.findFragmentByTag(tabId);
+        if (oldTab != null && oldTab != newTab) {
+        	oldTab.onTabInvisible();
+        }
+        if (newTab == null) {
         	if (TAB_PRACTICE.equals(tabId)) {
         		PracticeTab practiceTab = new PracticeTab(); 
-        		tabs.add(TAB_PRACTICE_ID, practiceTab);
                 fm.beginTransaction()
-                	.replace(placeholder, practiceTab, tabId)
+                	.replace(R.id.mainFragment_tabPractice, practiceTab, tabId)
                 	.commit();
+                newTab = practiceTab;
         	}
         	if (TAB_COMPETITION.equals(tabId)) {
         		CompetitionTab competitionTab = new CompetitionTab(); 
-        		tabs.add(TAB_COMPETITION_ID, competitionTab);
                 fm.beginTransaction()
-                	.replace(placeholder, competitionTab, tabId)
+                	.replace(R.id.mainFragment_tabCompetition, competitionTab, tabId)
                 	.commit();
+                newTab = competitionTab;
         	}
+        }
+        if (oldTab != newTab) {
+        	newTab.onTabVisible();
         }
     }
 }

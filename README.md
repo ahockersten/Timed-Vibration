@@ -19,10 +19,7 @@ Bug fixes
 - In "Competition mode", two timers happening at the same time will produce
   sporadic vibration results. Need to ignore one of them when both are
   happening.
-- Strange stuff happens to the "silent" variable on rotation. onTabVisible()
-  is no longer called for some reason, it seems? Tabs probably need to be
-  parceled so that they can be recovered on rotation?
-- Double vibration doesn't actually work
+- Double vibration doesn't actually work now because I broke it
 
 Future improvements
 -------------------
