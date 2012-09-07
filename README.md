@@ -23,6 +23,7 @@ Bug fixes
   "Competition mode".
 - Strange stuff happens to the "silent" variable on rotation. onTabVisible()
   is no longer called for some reason, it seems?
+- Double vibration doesn't actually work
 
 Future improvements
 -------------------

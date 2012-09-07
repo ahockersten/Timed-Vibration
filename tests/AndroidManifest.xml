@@ -21,7 +21,8 @@ along with Timed Vibration.  If not, see <http://www.gnu.org/licenses/>.
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="8" />
+    <uses-sdk android:minSdkVersion="8"
+              android:targetSdkVersion="15" />
 
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"

@@ -159,8 +159,8 @@ public class PracticeTab extends Fragment implements Tab{
 		vibrations.add(task);
 		AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibration, delay, task);
-		// DEBUG: vibrate really often
-		//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 1000, 1000, task);
+		// DEBUG: vibrate per second instead of per minute 
+		//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibration / 60, delay / 60, task);
 	}
 
 	/**
