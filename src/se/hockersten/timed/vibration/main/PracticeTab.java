@@ -14,9 +14,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Timed Vibration.  If not, see <http://www.gnu.org/licenses/>.
-	
+
 package se.hockersten.timed.vibration.main;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import se.hockersten.timed.vibration.R;
@@ -36,15 +37,13 @@ import android.widget.Spinner;
 
 public class PracticeTab extends Fragment implements Tab{
 	private static String COUNTING = "COUNTING";
-	private static String VIBRATE_ONCE_TASK = "VIBRATE_ONCE_TASK";
-	private static String VIBRATE_TWICE_TASK = "VIBRATE_TWICE_TASK";
+	private static String VIBRATIONS = "VIBRATIONS";
 	private static String SPIN_SINGLE_POS = "SPIN_SINGLE_POS";
 	private static String SPIN_DOUBLE_POS = "SPIN_DOUBLE_POS";
 
 	private View root;
 	private boolean counting = false;
-	private PendingIntent vibrateOnceTask;
-	private PendingIntent vibrateTwiceTask;
+	private ArrayList<PendingIntent> vibrations;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,12 +63,12 @@ public class PracticeTab extends Fragment implements Tab{
 		
 		if (savedInstanceState != null) {
 			counting = savedInstanceState.getBoolean(COUNTING);
-			vibrateOnceTask = savedInstanceState.getParcelable(VIBRATE_ONCE_TASK);
-			vibrateTwiceTask = savedInstanceState.getParcelable(VIBRATE_TWICE_TASK);
+			vibrations = savedInstanceState.getParcelableArrayList(VIBRATIONS);
 			spinSingle.setSelection(savedInstanceState.getInt(SPIN_SINGLE_POS));
 			spinDouble.setSelection(savedInstanceState.getInt(SPIN_DOUBLE_POS));
 		}
 		else {
+			vibrations = new ArrayList<PendingIntent>(2);
 			spinSingle.setSelection(1); // 1 minute by default
 			spinDouble.setSelection(3); // 5 minutes by default
 		}
@@ -82,8 +81,7 @@ public class PracticeTab extends Fragment implements Tab{
 	public void onSaveInstanceState(Bundle b) {
 		super.onSaveInstanceState(b);
 		b.putBoolean(COUNTING, counting);
-		b.putParcelable(VIBRATE_ONCE_TASK, vibrateOnceTask);
-		b.putParcelable(VIBRATE_TWICE_TASK, vibrateTwiceTask);
+		b.putParcelableArrayList(VIBRATIONS, vibrations);
 		Spinner spinSingle = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalSingle);
 		Spinner spinDouble = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalDouble);
 		b.putInt(SPIN_SINGLE_POS, spinSingle.getSelectedItemPosition());
@@ -118,20 +116,36 @@ public class PracticeTab extends Fragment implements Tab{
 	public void startCounting() {
 		Spinner spinSingle = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalSingle);
 		Spinner spinDouble = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalDouble);
-		AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 		counting = true;
 
 		int singleMinutes = spinPosToMinutes(spinSingle.getSelectedItemPosition());
 		if (singleMinutes != -1) {
-			addVibration(singleMinutes, 2, vibrateOnceTask);
+			addVibration(singleMinutes, 1);
 		}
 		int doubleMinutes = spinPosToMinutes(spinDouble.getSelectedItemPosition());
 		if (doubleMinutes != -1) {
-			addVibration(doubleMinutes, 2, vibrateTwiceTask);
+			addVibration(doubleMinutes, 2);
 		}
 	}
+
+	/**
+	 * Stops the vibrating counter
+	 */
+	public void stopCounting() {
+		AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+		counting = false;
+		for (PendingIntent vibration : vibrations) {
+			alarmManager.cancel(vibration);
+		}
+		vibrations.clear();
+	}
 	
-	private void addVibration(int interval, int timesToVibrate, PendingIntent task) {
+	/**
+	 * Adds a vibration at the given interval.
+	 * @param interval The interval to vibrate at (in minutes)
+	 * @param timesToVibrate The number of times to vibrate
+	 */
+	private void addVibration(int interval, int timesToVibrate) {
 		Calendar nextApplicableMinute = Calendar.getInstance();
 		int nextMinute = normalizedMinuteDelay(nextApplicableMinute.get(Calendar.MINUTE), interval);
 		nextApplicableMinute.add(Calendar.MINUTE, nextMinute);
@@ -141,22 +155,12 @@ public class PracticeTab extends Fragment implements Tab{
 		long firstVibration = nextApplicableMinute.getTimeInMillis();
 		Intent i = new Intent(getActivity(), Vibrate.class);
 		i.putExtra(Vibrate.TIMES_TO_VIBRATE, timesToVibrate);
-		task = PendingIntent.getBroadcast(getActivity(), 0, i, 0);
+		PendingIntent task = PendingIntent.getBroadcast(getActivity(), 0, i, 0);
+		vibrations.add(task);
 		AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 1000, 1000, task);
-		//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibration, delay, task);
-	}
-
-	/**
-	 * Stops the vibrating counter
-	 */
-	public void stopCounting() {
-		AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-		counting = false;
-		alarmManager.cancel(vibrateOnceTask);
-		alarmManager.cancel(vibrateTwiceTask);
-		vibrateOnceTask = null;
-		vibrateTwiceTask = null;
+		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibration, delay, task);
+		// DEBUG: vibrate really often
+		//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 1000, 1000, task);
 	}
 
 	/**

@@ -21,6 +21,8 @@ Bug fixes
   happening.
 - It should not be possible to have "Practice mode" active at the same time as
   "Competition mode".
+- Strange stuff happens to the "silent" variable on rotation. onTabVisible()
+  is no longer called for some reason, it seems?
 
 Future improvements
 -------------------
