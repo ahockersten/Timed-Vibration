@@ -232,10 +232,10 @@ public class PracticeTab extends Fragment implements Tab{
 	}
 
 	@Override
-	public void onVisible() {
+	public void onTabVisible() {
 	}
 
 	@Override
-	public void onInvisible() {
+	public void onTabInvisible() {
 	}
 }

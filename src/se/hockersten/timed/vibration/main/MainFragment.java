@@ -97,10 +97,10 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
         }
         for (int i = 0; i < tabs.size(); i++) {
         	if (i == currentTab) {
-            	tabs.get(i).onVisible();
+            	tabs.get(i).onTabVisible();
         	}
         	else {
-        		tabs.get(i).onInvisible();
+        		tabs.get(i).onTabInvisible();
         	}
         }
     }

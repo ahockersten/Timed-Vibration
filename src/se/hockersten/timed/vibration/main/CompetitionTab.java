@@ -146,15 +146,15 @@ public class CompetitionTab extends Fragment implements Tab {
 	}
 
 	@Override
-	public void onVisible() {
+	public void onTabVisible() {
 		if (competing) {
 			wakeLock.acquire();
 		}
 	}
 
 	@Override
-	public void onInvisible() {
-		if (competing) { 
+	public void onTabInvisible() {
+		if (competing) {
 			wakeLock.release();
 		}
 	}
