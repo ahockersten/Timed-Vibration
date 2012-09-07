@@ -121,39 +121,30 @@ public class PracticeTab extends Fragment implements Tab{
 		AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 		counting = true;
 
-		// FIXME: lots of code that could potentially be reused here (but does it make it any clearer?)
 		int singleMinutes = spinPosToMinutes(spinSingle.getSelectedItemPosition());
 		if (singleMinutes != -1) {
-			Calendar nextApplicableMinuteSingle = Calendar.getInstance();
-			int nextSingleMinute = normalizedMinuteDelay(nextApplicableMinuteSingle.get(Calendar.MINUTE), singleMinutes);
-			nextApplicableMinuteSingle.add(Calendar.MINUTE, nextSingleMinute);
-			long delaySingle = nextSingleMinute *  60000;
-			nextApplicableMinuteSingle.set(Calendar.SECOND, 0);
-			nextApplicableMinuteSingle.set(Calendar.MILLISECOND, 0);
-			long firstVibrationSingle = nextApplicableMinuteSingle.getTimeInMillis();
-			Intent i = new Intent(getActivity(), Vibrate.class);
-			i.putExtra(Vibrate.TIMES_TO_VIBRATE, 1);
-			vibrateOnceTask = PendingIntent.getBroadcast(getActivity(), 0, i, 0);
-			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibrationSingle, delaySingle, vibrateOnceTask);
+			addVibration(singleMinutes, 2, vibrateOnceTask);
 		}
-		
 		int doubleMinutes = spinPosToMinutes(spinDouble.getSelectedItemPosition());
 		if (doubleMinutes != -1) {
-			Calendar nextApplicableMinuteDouble = Calendar.getInstance();
-			int nextDoubleMinute = normalizedMinuteDelay(nextApplicableMinuteDouble.get(Calendar.MINUTE), doubleMinutes);
-			nextApplicableMinuteDouble.add(Calendar.MINUTE, nextDoubleMinute);
-			long delayDouble = nextDoubleMinute *  60000;
-			nextApplicableMinuteDouble.set(Calendar.SECOND, 0);
-			nextApplicableMinuteDouble.set(Calendar.MILLISECOND, 0);
-			long firstVibrationDouble = nextApplicableMinuteDouble.getTimeInMillis();
-			Intent i = new Intent(getActivity(), Vibrate.class);
-			i.putExtra(Vibrate.TIMES_TO_VIBRATE, 2);
-			vibrateTwiceTask = PendingIntent.getBroadcast(getActivity(), 0, i, 0);
-			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibrationDouble, delayDouble, vibrateTwiceTask);
+			addVibration(doubleMinutes, 2, vibrateTwiceTask);
 		}
-		// DEBUG: Vibrate after 2 and 5 seconds instead, and then every 10 seconds (this won't work if fields are set to disabled)
-		//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 2000, 10000, vibrateOnceTask);
-		//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, 10000, vibrateTwiceTask);
+	}
+	
+	private void addVibration(int interval, int timesToVibrate, PendingIntent task) {
+		Calendar nextApplicableMinute = Calendar.getInstance();
+		int nextMinute = normalizedMinuteDelay(nextApplicableMinute.get(Calendar.MINUTE), interval);
+		nextApplicableMinute.add(Calendar.MINUTE, nextMinute);
+		long delay = nextMinute *  60000;
+		nextApplicableMinute.set(Calendar.SECOND, 0);
+		nextApplicableMinute.set(Calendar.MILLISECOND, 0);
+		long firstVibration = nextApplicableMinute.getTimeInMillis();
+		Intent i = new Intent(getActivity(), Vibrate.class);
+		i.putExtra(Vibrate.TIMES_TO_VIBRATE, timesToVibrate);
+		task = PendingIntent.getBroadcast(getActivity(), 0, i, 0);
+		AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 1000, 1000, task);
+		//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibration, delay, task);
 	}
 
 	/**
@@ -233,9 +224,11 @@ public class PracticeTab extends Fragment implements Tab{
 
 	@Override
 	public void onTabVisible() {
+		Vibrate.setSilenced(false);
 	}
 
 	@Override
 	public void onTabInvisible() {
+		Vibrate.setSilenced(true);
 	}
 }

@@ -33,13 +33,13 @@ import android.widget.TabHost.TabSpec;
 public class MainFragment extends Fragment implements OnTabChangeListener {
     private static final String TAB_PRACTICE = "PRACTICE";
     private static final String TAB_COMPETITION = "COMPETITION";
+    private static final int TAB_PRACTICE_ID = 0;
+    private static final int TAB_COMPETITION_ID = 1;
 
     private View root;
     private TabHost host;
     private ArrayList<Tab> tabs;
     private int currentTab;
-    private PracticeTab practiceTab;
-    private CompetitionTab competitionTab;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,11 +89,11 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
     public void onTabChanged(String tabId) {
         if (TAB_PRACTICE.equals(tabId)) {
             updateTab(tabId, R.id.mainFragment_tabPractice);
-            currentTab = 0;
+            currentTab = TAB_PRACTICE_ID;
         }
         if (TAB_COMPETITION.equals(tabId)) {
             updateTab(tabId, R.id.mainFragment_tabCompetition);
-            currentTab = 1;
+            currentTab = TAB_COMPETITION_ID;
         }
         for (int i = 0; i < tabs.size(); i++) {
         	if (i == currentTab) {
@@ -109,13 +109,15 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
         FragmentManager fm = getFragmentManager();
         if (fm.findFragmentByTag(tabId) == null) {
         	if (TAB_PRACTICE.equals(tabId)) {
-        		practiceTab = new PracticeTab();
+        		PracticeTab practiceTab = new PracticeTab(); 
+        		tabs.add(TAB_PRACTICE_ID, practiceTab);
                 fm.beginTransaction()
                 	.replace(placeholder, practiceTab, tabId)
                 	.commit();
         	}
         	if (TAB_COMPETITION.equals(tabId)) {
-        		competitionTab = new CompetitionTab();
+        		CompetitionTab competitionTab = new CompetitionTab(); 
+        		tabs.add(TAB_COMPETITION_ID, competitionTab);
                 fm.beginTransaction()
                 	.replace(placeholder, competitionTab, tabId)
                 	.commit();
