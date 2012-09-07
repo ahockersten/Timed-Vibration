@@ -21,8 +21,6 @@ Bug fixes
   happening.
 - It should not be possible to have "Practice mode" active at the same time as
   "Competition mode".
-- Second timer is reset when pressing "Start counting" in "Practice mode" (and
-  probably the first one too)
 
 Future improvements
 -------------------

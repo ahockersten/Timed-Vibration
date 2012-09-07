@@ -45,32 +45,34 @@ public class PracticeTab extends Fragment implements Tab{
 	private boolean counting = false;
 	private PendingIntent vibrateOnceTask;
 	private PendingIntent vibrateTwiceTask;
-	private int spinSinglePos = 1; // 1 minute by default
-	private int spinDoublePos = 3; // 5 minutes by default 
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		root = inflater.inflate(R.layout.main_practice, container, false);
+
+		Spinner spinSingle = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalSingle);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+		        R.array.time_array, android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinSingle.setAdapter(adapter);
+
+		Spinner spinDouble = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalDouble);
+		ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(),
+		        R.array.time_array, android.R.layout.simple_spinner_item);
+		adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinDouble.setAdapter(adapter2);
+		
 		if (savedInstanceState != null) {
 			counting = savedInstanceState.getBoolean(COUNTING);
 			vibrateOnceTask = savedInstanceState.getParcelable(VIBRATE_ONCE_TASK);
 			vibrateTwiceTask = savedInstanceState.getParcelable(VIBRATE_TWICE_TASK);
-			spinSinglePos = savedInstanceState.getInt(SPIN_SINGLE_POS);
-			spinDoublePos = savedInstanceState.getInt(SPIN_DOUBLE_POS);
+			spinSingle.setSelection(savedInstanceState.getInt(SPIN_SINGLE_POS));
+			spinDouble.setSelection(savedInstanceState.getInt(SPIN_DOUBLE_POS));
 		}
-
-		root = inflater.inflate(R.layout.main_practice, container, false);
-
-		Spinner spinner = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalSingle);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-		        R.array.time_array, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(adapter);
-
-		Spinner spinner2 = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalDouble);
-		ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(),
-		        R.array.time_array, android.R.layout.simple_spinner_item);
-		adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner2.setAdapter(adapter2);
+		else {
+			spinSingle.setSelection(1); // 1 minute by default
+			spinDouble.setSelection(3); // 5 minutes by default
+		}
 
 		updateUI();
 		return root;
@@ -82,8 +84,10 @@ public class PracticeTab extends Fragment implements Tab{
 		b.putBoolean(COUNTING, counting);
 		b.putParcelable(VIBRATE_ONCE_TASK, vibrateOnceTask);
 		b.putParcelable(VIBRATE_TWICE_TASK, vibrateTwiceTask);
-		b.putInt(SPIN_SINGLE_POS, spinSinglePos);
-		b.putInt(SPIN_DOUBLE_POS, spinDoublePos);
+		Spinner spinSingle = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalSingle);
+		Spinner spinDouble = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalDouble);
+		b.putInt(SPIN_SINGLE_POS, spinSingle.getSelectedItemPosition());
+		b.putInt(SPIN_DOUBLE_POS, spinDouble.getSelectedItemPosition());
 	}
 
 	@Override
@@ -173,8 +177,6 @@ public class PracticeTab extends Fragment implements Tab{
 		Spinner spinDouble = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalDouble);
 		spinSingle.setEnabled(!counting);
 		spinDouble.setEnabled(!counting);
-		spinSingle.setSelection(spinSinglePos);
-		spinDouble.setSelection(spinDoublePos);
 		if (counting) {
 			startBtn.setText(R.string.stop_counting);
 		}
