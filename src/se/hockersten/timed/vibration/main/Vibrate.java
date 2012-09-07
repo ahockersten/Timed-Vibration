@@ -22,11 +22,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Vibrator;
 
-public class VibrateOnce extends BroadcastReceiver {
+public class Vibrate extends BroadcastReceiver {
+	public static final String TIMES_TO_VIBRATE = "TIMES_TO_VIBRATE";
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-		long[] pattern = { 0, 100 };
+		int times = intent.getIntExtra(TIMES_TO_VIBRATE, 1);
+		long[] pattern = new long[times*2];
+		pattern[0] = 0;
+		for (int i = 1; i < times*2; i++) {
+			pattern[i] = 100;
+		}
 		vibrator.vibrate(pattern, -1);
 	}
 }

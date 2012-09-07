@@ -17,16 +17,18 @@ Future improvements/bug fixes
 Bug fixes
 ---------
 - In "Competition mode", two timers happening at the same time will produce
-sporadic vibration results. Need to ignore one of them when both are
-happening.
+  sporadic vibration results. Need to ignore one of them when both are
+  happening.
 - It should not be possible to have "Practice mode" active at the same time as
-"Competition mode".
+  "Competition mode".
+- Second timer is reset when pressing "Start counting" in "Practice mode" (and
+  probably the first one too)
 
 Future improvements
 -------------------
 - Add a proper icon
 - Add a sound that plays when you are close to a set goal in 
-"Competition mode"
+  "Competition mode"
 - Make the UI prettier
 - The "tap me" button should be a pretty icon instead of a button
 

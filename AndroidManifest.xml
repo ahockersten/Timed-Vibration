@@ -40,8 +40,7 @@ along with Timed Vibration.  If not, see <http://www.gnu.org/licenses/>.
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".main.VibrateOnce" />
-        <receiver android:name=".main.VibrateTwice" />
+        <receiver android:name=".main.Vibrate" />
     </application>
 
 </manifest>

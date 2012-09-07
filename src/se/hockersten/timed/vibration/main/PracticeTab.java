@@ -34,7 +34,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-public class PracticeTab extends Fragment {
+public class PracticeTab extends Fragment implements Tab{
 	private static String COUNTING = "COUNTING";
 	private static String VIBRATE_ONCE_TASK = "VIBRATE_ONCE_TASK";
 	private static String VIBRATE_TWICE_TASK = "VIBRATE_TWICE_TASK";
@@ -91,18 +91,21 @@ public class PracticeTab extends Fragment {
 		Button startBtn = (Button) getActivity().findViewById(R.id.mainPractice_btnStart);
 		startBtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				counting = !counting;
+				flipCounting();
 				updateUI();
-				if (counting) {
-					startCounting();
-				}
-				else {
-					stopCounting();
-				}
 			}
 		});
 
 		super.onResume();
+	}
+	
+	public void flipCounting() {
+		if (counting) {
+			stopCounting();
+		}
+		else {
+			startCounting();
+		}
 	}
 	
 	/**
@@ -112,33 +115,36 @@ public class PracticeTab extends Fragment {
 		Spinner spinSingle = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalSingle);
 		Spinner spinDouble = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalDouble);
 		AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+		counting = true;
 
 		// FIXME: lots of code that could potentially be reused here (but does it make it any clearer?)
 		int singleMinutes = spinPosToMinutes(spinSingle.getSelectedItemPosition());
 		if (singleMinutes != -1) {
 			Calendar nextApplicableMinuteSingle = Calendar.getInstance();
-			int nextSingleMinute = normalizedMinuteDelay(nextApplicableMinuteSingle.get(Calendar.MINUTE), spinPosToMinutes(singleMinutes));
+			int nextSingleMinute = normalizedMinuteDelay(nextApplicableMinuteSingle.get(Calendar.MINUTE), singleMinutes);
 			nextApplicableMinuteSingle.add(Calendar.MINUTE, nextSingleMinute);
 			long delaySingle = nextSingleMinute *  60000;
 			nextApplicableMinuteSingle.set(Calendar.SECOND, 0);
 			nextApplicableMinuteSingle.set(Calendar.MILLISECOND, 0);
 			long firstVibrationSingle = nextApplicableMinuteSingle.getTimeInMillis();
-			Intent i1 = new Intent(getActivity(), VibrateOnce.class);
-			vibrateOnceTask = PendingIntent.getBroadcast(getActivity(), 0, i1, 0);
+			Intent i = new Intent(getActivity(), Vibrate.class);
+			i.putExtra(Vibrate.TIMES_TO_VIBRATE, 1);
+			vibrateOnceTask = PendingIntent.getBroadcast(getActivity(), 0, i, 0);
 			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibrationSingle, delaySingle, vibrateOnceTask);
 		}
-
+		
 		int doubleMinutes = spinPosToMinutes(spinDouble.getSelectedItemPosition());
 		if (doubleMinutes != -1) {
 			Calendar nextApplicableMinuteDouble = Calendar.getInstance();
-			int nextDoubleMinute = normalizedMinuteDelay(nextApplicableMinuteDouble.get(Calendar.MINUTE), spinPosToMinutes(doubleMinutes));
+			int nextDoubleMinute = normalizedMinuteDelay(nextApplicableMinuteDouble.get(Calendar.MINUTE), doubleMinutes);
 			nextApplicableMinuteDouble.add(Calendar.MINUTE, nextDoubleMinute);
 			long delayDouble = nextDoubleMinute *  60000;
 			nextApplicableMinuteDouble.set(Calendar.SECOND, 0);
 			nextApplicableMinuteDouble.set(Calendar.MILLISECOND, 0);
 			long firstVibrationDouble = nextApplicableMinuteDouble.getTimeInMillis();
-			Intent i2 = new Intent(getActivity(), VibrateTwice.class);
-			vibrateTwiceTask = PendingIntent.getBroadcast(getActivity(), 0, i2, 0);
+			Intent i = new Intent(getActivity(), Vibrate.class);
+			i.putExtra(Vibrate.TIMES_TO_VIBRATE, 2);
+			vibrateTwiceTask = PendingIntent.getBroadcast(getActivity(), 0, i, 0);
 			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibrationDouble, delayDouble, vibrateTwiceTask);
 		}
 		// DEBUG: Vibrate after 2 and 5 seconds instead, and then every 10 seconds (this won't work if fields are set to disabled)
@@ -177,8 +183,20 @@ public class PracticeTab extends Fragment {
 		}
 	}
 
-	private static int normalizedMinuteDelay(int currentMinute, int delay) {
-		return delay - currentMinute % delay;
+	/**
+	 * Given the current minute in an hour, and an ínterval, this returns the
+	 * appropriate number of minutes to delay to get an "even" count. For
+	 * a delay of 1 minute, this will always return a 1 minute delay. For 5
+	 * minutes, this would return a number between 1 and 5 which, when this
+	 * delay is applied, would end at the next appropriate 5 minute boundary
+	 * (so 3 would delay 2 minutes, 6 would delay 4 minutes and so on).
+	 *   
+	 * @param currentMinute The current clock minute
+	 * @param interval The interval to vibrate at
+	 * @return The number of minutes to wait until the first vibration
+	 */
+	private static int normalizedMinuteDelay(int currentMinute, int interval) {
+		return interval - currentMinute % interval;
 	}
 
 	/**
@@ -209,5 +227,13 @@ public class PracticeTab extends Fragment {
 			assert(false);
 			return -1;
 		}
+	}
+
+	@Override
+	public void onVisible() {
+	}
+
+	@Override
+	public void onInvisible() {
 	}
 }

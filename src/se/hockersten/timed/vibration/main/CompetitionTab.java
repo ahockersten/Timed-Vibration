@@ -33,7 +33,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class CompetitionTab extends Fragment {
+public class CompetitionTab extends Fragment implements Tab {
 	private static final String COMPETING = "COMPETING";
 	
 	private View root;
@@ -49,7 +49,9 @@ public class CompetitionTab extends Fragment {
 		}
 
 		root = inflater.inflate(R.layout.main_competition, container, false);
-		tapTimes = new LinkedList<Long>(); // FIXME needs to be in bundle
+		PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
+		wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CompetitionTab.onResume()");
+		tapTimes = new LinkedList<Long>(); // FIXME should be in bundle
 		updateUI();
 		return root;
 	}
@@ -62,20 +64,10 @@ public class CompetitionTab extends Fragment {
 
 	@Override
 	public void onResume() {
-		PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
-		wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CompetitionTab.onResume()");
-		tapTimes = new LinkedList<Long>();
-		
 		Button startBtn = (Button) root.findViewById(R.id.mainCompetition_btnStart);
 		startBtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				competing = !competing;
-				if (competing) {
-					startCompetition();
-				}
-				else {
-					stopCompetition();
-				}
+				flipCompeting();
 				updateUI();
 			}
 		});
@@ -99,13 +91,24 @@ public class CompetitionTab extends Fragment {
 		super.onResume();
 	}
 	
+	public void flipCompeting() {
+		if (competing) {
+			stopCompetition();
+		}
+		else {
+			startCompetition();
+		}
+	}
+	
 	public void startCompetition() {
 		 wakeLock.acquire();
+		 competing = true;
 		 lastPress = Calendar.getInstance();
 	}
 	
 	public void stopCompetition() {
-		 wakeLock.release();
+		competing = false;
+		wakeLock.release();
 	}
 	
 	private void updateUI() {
@@ -130,5 +133,19 @@ public class CompetitionTab extends Fragment {
 		}
 		TextView lastResultTv = (TextView) root.findViewById(R.id.mainCompetition_tvLastResult);
 		lastResultTv.setText(resultText);
+	}
+
+	@Override
+	public void onVisible() {
+		if (competing) {
+			wakeLock.acquire();
+		}
+	}
+
+	@Override
+	public void onInvisible() {
+		if (competing) { 
+			wakeLock.release();
+		}
 	}
 }

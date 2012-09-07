@@ -17,6 +17,8 @@
 
 package se.hockersten.timed.vibration.main;
 
+import java.util.ArrayList;
+
 import se.hockersten.timed.vibration.R;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -34,7 +36,10 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
 
     private View root;
     private TabHost host;
+    private ArrayList<Tab> tabs;
     private int currentTab;
+    private PracticeTab practiceTab;
+    private CompetitionTab competitionTab;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,8 +47,8 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
 		}
 
 		root = inflater.inflate(R.layout.main_fragment, container, false);
-		
         host = (TabHost) root.findViewById(android.R.id.tabhost);
+        tabs = new ArrayList<Tab>(2);
 
         host.setup();
         host.addTab(newTab(TAB_PRACTICE, "Practice", R.id.mainFragment_tabPractice)); // FIXME magic string 
@@ -85,12 +90,18 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
         if (TAB_PRACTICE.equals(tabId)) {
             updateTab(tabId, R.id.mainFragment_tabPractice);
             currentTab = 0;
-            return;
         }
         if (TAB_COMPETITION.equals(tabId)) {
             updateTab(tabId, R.id.mainFragment_tabCompetition);
             currentTab = 1;
-            return;
+        }
+        for (int i = 0; i < tabs.size(); i++) {
+        	if (i == currentTab) {
+            	tabs.get(i).onVisible();
+        	}
+        	else {
+        		tabs.get(i).onInvisible();
+        	}
         }
     }
  
@@ -98,13 +109,15 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
         FragmentManager fm = getFragmentManager();
         if (fm.findFragmentByTag(tabId) == null) {
         	if (TAB_PRACTICE.equals(tabId)) {
+        		practiceTab = new PracticeTab();
                 fm.beginTransaction()
-                	.replace(placeholder, new PracticeTab(), tabId)
+                	.replace(placeholder, practiceTab, tabId)
                 	.commit();
         	}
         	if (TAB_COMPETITION.equals(tabId)) {
+        		competitionTab = new CompetitionTab();
                 fm.beginTransaction()
-                	.replace(placeholder, new CompetitionTab(), tabId)
+                	.replace(placeholder, competitionTab, tabId)
                 	.commit();
         	}
         }
