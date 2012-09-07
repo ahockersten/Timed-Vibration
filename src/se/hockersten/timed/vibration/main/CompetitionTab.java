@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 public class CompetitionTab extends Fragment implements Tab {
 	private static final String COMPETING = "COMPETING";
+	private static final String TAPTIMES = "TAPTIMES";
 	
 	private View root;
 	private boolean competing;
@@ -44,14 +45,18 @@ public class CompetitionTab extends Fragment implements Tab {
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		tapTimes = new LinkedList<Long>();
 		if (savedInstanceState != null) {
 			competing = savedInstanceState.getBoolean(COMPETING);
+			long[] tempArray = savedInstanceState.getLongArray(TAPTIMES);
+			for (int i = 0; i < tempArray.length; i++) {
+				tapTimes.add(tempArray[i]);
+			}
 		}
 
 		root = inflater.inflate(R.layout.main_competition, container, false);
 		PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
 		wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CompetitionTab.onResume()");
-		tapTimes = new LinkedList<Long>(); // FIXME should be in bundle
 		updateUI();
 		return root;
 	}
@@ -60,6 +65,11 @@ public class CompetitionTab extends Fragment implements Tab {
 	public void onSaveInstanceState(Bundle b) {
 		super.onSaveInstanceState(b);
 		b.putBoolean(COMPETING, competing);
+		long[] tempArray = new long[tapTimes.size()];
+		for (int i = 0; i < tapTimes.size(); i++) {
+			tempArray[i] = tapTimes.get(i);
+		}
+		b.putLongArray(TAPTIMES, tempArray);
 	}
 
 	@Override
