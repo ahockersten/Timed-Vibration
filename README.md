@@ -19,10 +19,9 @@ Bug fixes
 - In "Competition mode", two timers happening at the same time will produce
   sporadic vibration results. Need to ignore one of them when both are
   happening.
-- It should not be possible to have "Practice mode" active at the same time as
-  "Competition mode".
 - Strange stuff happens to the "silent" variable on rotation. onTabVisible()
-  is no longer called for some reason, it seems?
+  is no longer called for some reason, it seems? Tabs probably need to be
+  parceled so that they can be recovered on rotation?
 - Double vibration doesn't actually work
 
 Future improvements
