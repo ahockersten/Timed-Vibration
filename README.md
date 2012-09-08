@@ -27,8 +27,6 @@ Future improvements
   "Competition mode"
 - Make the UI prettier
 - The "tap me" button should be a pretty icon instead of a button
-- Research whether the call to setRetainInstance(true) in MainFragment still
-  makes sense
 
 Author info
 ===========

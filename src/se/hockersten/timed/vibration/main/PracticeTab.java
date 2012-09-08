@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 public class PracticeTab extends Fragment implements Tab {
+    // Constants used when saving a bundle for this Fragment
     private static String COUNTING = "COUNTING";
     private static String SPIN_SINGLE_POS = "SPIN_SINGLE_POS";
     private static String SPIN_DOUBLE_POS = "SPIN_DOUBLE_POS";
