@@ -30,7 +30,8 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 
 public class MainFragment extends Fragment implements OnTabChangeListener {
-	private static final String TAB_PRACTICE = "PRACTICE";
+    // Constants used to describe the two available tabs
+    private static final String TAB_PRACTICE = "PRACTICE";
     private static final String TAB_COMPETITION = "COMPETITION";
 
     private View root;
@@ -60,7 +61,14 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
 
         onTabChanged(currentTab);
     }
-    
+
+    /**
+     * Called to create a new tab.
+     * @param tag The tag used for this tab.
+     * @param labelId The label which should be used in the UI for this tab
+     * @param tabContentId The tab's layout
+     * @return A TabSpec corresponding to this Tab 
+     */
     private TabSpec newTab(String tag, String labelId, int tabContentId) {
         TabSpec tabSpec = host.newTabSpec(tag);
         tabSpec.setIndicator(labelId);
