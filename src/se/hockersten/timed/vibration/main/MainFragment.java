@@ -39,9 +39,6 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		if (savedInstanceState != null) {
-		}
-
 		root = inflater.inflate(R.layout.main_fragment, container, false);
         host = (TabHost) root.findViewById(android.R.id.tabhost);
 
@@ -51,16 +48,6 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
         host.addTab(newTab(TAB_COMPETITION, res.getString(R.string.Competition), R.id.mainFragment_tabCompetition));
 
 		return root;
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle b) {
-		super.onSaveInstanceState(b);
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
 	}
 	
     @Override
