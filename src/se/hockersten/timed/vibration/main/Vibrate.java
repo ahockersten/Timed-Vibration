@@ -24,15 +24,19 @@ import android.os.Vibrator;
 
 public class Vibrate extends BroadcastReceiver {
     public static final String TIMES_TO_VIBRATE = "TIMES_TO_VIBRATE";
-    private static boolean silenced = false;
+    private static boolean enabled = false;
 
-    public static void setSilenced(boolean silenced) {
-        Vibrate.silenced = silenced;
+    /**
+     * Enables or disables vibration globally.
+     * @param enabled Whether vibration should be enabled or disabled
+     */
+    public static void setEnabled(boolean enabled) {
+        Vibrate.enabled = enabled;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (silenced) {
+        if (!enabled) {
             return;
         }
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);

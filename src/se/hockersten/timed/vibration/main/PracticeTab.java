@@ -101,6 +101,10 @@ public class PracticeTab extends Fragment implements Tab {
         super.onResume();
     }
 
+    /**
+     * Stops counting if currently counting, starts counting if not currently
+     * counting.
+     */
     public void flipCounting() {
         if (counting) {
             stopCounting();
@@ -228,11 +232,11 @@ public class PracticeTab extends Fragment implements Tab {
 
     @Override
     public void onTabVisible() {
-        Vibrate.setSilenced(false);
+        Vibrate.setEnabled(true);
     }
 
     @Override
     public void onTabInvisible() {
-        Vibrate.setSilenced(true);
+        Vibrate.setEnabled(false);
     }
 }

@@ -36,6 +36,7 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
 
     private View root;
     private TabHost host;
+    /** The currently active tab */
     private String currentTab = TAB_PRACTICE;
 
     @Override
