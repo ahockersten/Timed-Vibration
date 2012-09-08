@@ -38,10 +38,13 @@ public class CompetitionTab extends Fragment implements Tab {
     private static final String COMPETING = "COMPETING";
     private static final String TAP_TIMES = "TAP_TIMES";
     private static final String LAST_PRESS = "LAST_PRESS";
+    private static final String VISIBLE = "VISIBLE";
 
     private View root;
     /** True if competition mode is currently turned on */
     private boolean competing;
+    /** True if this tab is currently visible */
+    private boolean visible;
     /** The time the "tap me" button was last pressed */
     private Calendar lastPress;
     /**
@@ -60,12 +63,13 @@ public class CompetitionTab extends Fragment implements Tab {
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CompetitionTab.onCreateView()");
         if (savedInstanceState != null) {
             competing = savedInstanceState.getBoolean(COMPETING);
+            visible = savedInstanceState.getBoolean(VISIBLE);
             long[] tempArray = savedInstanceState.getLongArray(TAP_TIMES);
             for (int i = 0; i < tempArray.length; i++) {
                 tapTimes.add(tempArray[i]);
             }
             lastPress = (Calendar) savedInstanceState.getSerializable(LAST_PRESS);
-            if (competing) {
+            if (competing && visible) {
                 // take the new wakelock if we are competing again
                 wakeLock.acquire();
             }
@@ -80,15 +84,16 @@ public class CompetitionTab extends Fragment implements Tab {
     public void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
         b.putBoolean(COMPETING, competing);
+        b.putBoolean(VISIBLE, visible);
         long[] tempArray = new long[tapTimes.size()];
         for (int i = 0; i < tapTimes.size(); i++) {
             tempArray[i] = tapTimes.get(i);
         }
         b.putLongArray(TAP_TIMES, tempArray);
         b.putSerializable(LAST_PRESS, lastPress);
-        if (competing) {
-            // we need to release the wakelock here, because we can't save it
-            // however, we make sure to take a new wakelock when recreating
+        if (competing && visible) {
+            // need to release the wakelock here, because it can't be saved
+            // a new wakelock is taken when recreating
             wakeLock.release();
         }
     }
@@ -171,6 +176,7 @@ public class CompetitionTab extends Fragment implements Tab {
         if (competing) {
             wakeLock.acquire();
         }
+        visible = true;
     }
 
     @Override
@@ -178,5 +184,6 @@ public class CompetitionTab extends Fragment implements Tab {
         if (competing) {
             wakeLock.release();
         }
+        visible = false;
     }
 }
