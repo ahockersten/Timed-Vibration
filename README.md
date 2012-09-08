@@ -16,8 +16,6 @@ Future improvements/bug fixes
 
 Known bugs
 ----------
-- In "competition mode", press "start counting". Switch away from the app.
-  Switch back. Press "stop counting". Crash.
 
 Future improvements
 -------------------

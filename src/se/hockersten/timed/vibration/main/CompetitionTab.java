@@ -69,10 +69,6 @@ public class CompetitionTab extends Fragment implements Tab {
                 tapTimes.add(tempArray[i]);
             }
             lastPress = (Calendar) savedInstanceState.getSerializable(LAST_PRESS);
-            if (competing && visible) {
-                // take the new wakelock if we are competing again
-                wakeLock.acquire();
-            }
         }
 
         root = inflater.inflate(R.layout.main_competition, container, false);
@@ -90,11 +86,6 @@ public class CompetitionTab extends Fragment implements Tab {
         }
         b.putLongArray(TAP_TIMES, tempArray);
         b.putSerializable(LAST_PRESS, lastPress);
-        if (competing && visible) {
-            // need to release the wakelock here, because it can't be saved
-            // a new wakelock is taken when recreating
-            wakeLock.release();
-        }
     }
 
     @Override
@@ -129,6 +120,11 @@ public class CompetitionTab extends Fragment implements Tab {
                 updateUI();
             }
         });
+
+        if (competing && visible) {
+            // take the new wakelock if we are competing
+            wakeLock.acquire();
+        }
         updateUI();
         super.onResume();
     }
@@ -141,6 +137,12 @@ public class CompetitionTab extends Fragment implements Tab {
             prefsEditor.putLong(LAST_PRESS + i, tapTimes.get(i));
         }
         prefsEditor.commit();
+
+        if (competing && visible) {
+            // need to release the wakelock here, because it can't be saved
+            // a new wakelock is taken when recreating
+            wakeLock.release();
+        }
         super.onStop();
     }
 
@@ -154,8 +156,8 @@ public class CompetitionTab extends Fragment implements Tab {
     }
 
     public void startCompetition() {
-         wakeLock.acquire();
          competing = true;
+         wakeLock.acquire();
          lastPress = Calendar.getInstance();
     }
 
