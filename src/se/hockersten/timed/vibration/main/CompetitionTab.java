@@ -137,8 +137,8 @@ public class CompetitionTab extends Fragment implements Tab {
     public void onStop() {
         SharedPreferences sharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = sharedPrefs.edit();
-        for (int i = 0; i < 5; i++) {
-            prefsEditor.putLong(LAST_PRESS + i, lastPress.get(i));
+        for (int i = 0; i < tapTimes.size(); i++) {
+            prefsEditor.putLong(LAST_PRESS + i, tapTimes.get(i));
         }
         prefsEditor.commit();
         super.onStop();
