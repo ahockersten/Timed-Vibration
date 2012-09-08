@@ -18,6 +18,7 @@
 package se.hockersten.timed.vibration.main;
 
 import se.hockersten.timed.vibration.R;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -45,8 +46,9 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
         host = (TabHost) root.findViewById(android.R.id.tabhost);
 
         host.setup();
-        host.addTab(newTab(TAB_PRACTICE, "Practice", R.id.mainFragment_tabPractice)); // FIXME magic string 
-        host.addTab(newTab(TAB_COMPETITION, "Competition", R.id.mainFragment_tabCompetition)); // FIXME magic string
+        Resources res = getResources();
+        host.addTab(newTab(TAB_PRACTICE, res.getString(R.string.Practice), R.id.mainFragment_tabPractice)); 
+        host.addTab(newTab(TAB_COMPETITION, res.getString(R.string.Competition), R.id.mainFragment_tabCompetition));
 
 		return root;
 	}

@@ -19,11 +19,13 @@ along with Timed Vibration.  If not, see <http://www.gnu.org/licenses/>.
 
 <resources>
     <string name="app_name">Timed Vibration</string>
+    <string name="Competition">Tävla</string>
     <string name="interval_to_vibrate_at">Intervall att vibrera vid</string>
     <string name="interval_to_double_vibrate_at">Intervall att dubbel-vibrera vid</string>
     <string name="last_results">Senaste resultat:</string>
     <string name="minutes">minuter</string>
     <string name="milliseconds">millisekunder</string>
+    <string name="Practice">Öva</string>
     <string name="seconds">sekunder</string>
     <string name="start_counting">Börja räkna</string>
     <string name="stop_counting">Sluta räkna</string>
