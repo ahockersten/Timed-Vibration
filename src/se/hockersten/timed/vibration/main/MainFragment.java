@@ -70,16 +70,10 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
 
     @Override
     public void onTabChanged(String tabId) {
-        if (TAB_PRACTICE.equals(tabId)) {
-            updateTab(tabId);
-            currentTab = TAB_PRACTICE;
-        }
-        if (TAB_COMPETITION.equals(tabId)) {
-            updateTab(tabId);
-            currentTab = TAB_COMPETITION;
-        }
+        updateTab(tabId);
+        currentTab = tabId;
     }
- 
+
     private void updateTab(String tabId) {
         FragmentManager fragmentManager = getFragmentManager();
         Tab oldTab = (Tab) fragmentManager.findFragmentByTag(currentTab);
