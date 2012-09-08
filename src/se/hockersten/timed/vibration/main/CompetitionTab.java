@@ -62,6 +62,7 @@ public class CompetitionTab extends Fragment implements Tab {
         PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CompetitionTab.onCreateView()");
         if (savedInstanceState != null) {
+            tapTimes = new LinkedList<Long>();
             competing = savedInstanceState.getBoolean(COMPETING);
             visible = savedInstanceState.getBoolean(VISIBLE);
             long[] tempArray = savedInstanceState.getLongArray(TAP_TIMES);
