@@ -37,10 +37,10 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
     private View root;
     private TabHost host;
     private String currentTab = TAB_PRACTICE;
-	
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		root = inflater.inflate(R.layout.main_fragment, container, false);
+    
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        root = inflater.inflate(R.layout.main_fragment, container, false);
         host = (TabHost) root.findViewById(android.R.id.tabhost);
 
         host.setup();
@@ -48,16 +48,16 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
         host.addTab(newTab(TAB_PRACTICE, res.getString(R.string.Practice), R.id.mainFragment_tabPractice)); 
         host.addTab(newTab(TAB_COMPETITION, res.getString(R.string.Competition), R.id.mainFragment_tabCompetition));
 
-		return root;
-	}
-	
+        return root;
+    }
+    
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
 
         host.setOnTabChangedListener(this);
-		host.setCurrentTabByTag(currentTab);
+        host.setCurrentTabByTag(currentTab);
 
         onTabChanged(currentTab);
     }
@@ -82,26 +82,26 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
         Tab oldTab = (Tab) fragmentManager.findFragmentByTag(currentTab);
         Tab newTab = (Tab) fragmentManager.findFragmentByTag(tabId);
         if (oldTab != null && oldTab != newTab) {
-        	oldTab.onTabInvisible();
+            oldTab.onTabInvisible();
         }
         if (newTab == null) {
-        	if (TAB_PRACTICE.equals(tabId)) {
-        		PracticeTab practiceTab = new PracticeTab();
-        		fragmentManager.beginTransaction()
-                	.replace(R.id.mainFragment_tabPractice, practiceTab, tabId)
-                	.commit();
+            if (TAB_PRACTICE.equals(tabId)) {
+                PracticeTab practiceTab = new PracticeTab();
+                fragmentManager.beginTransaction()
+                    .replace(R.id.mainFragment_tabPractice, practiceTab, tabId)
+                    .commit();
                 newTab = practiceTab;
-        	}
-        	if (TAB_COMPETITION.equals(tabId)) {
-        		CompetitionTab competitionTab = new CompetitionTab();
-        		fragmentManager.beginTransaction()
-                	.replace(R.id.mainFragment_tabCompetition, competitionTab, tabId)
-                	.commit();
+            }
+            if (TAB_COMPETITION.equals(tabId)) {
+                CompetitionTab competitionTab = new CompetitionTab();
+                fragmentManager.beginTransaction()
+                    .replace(R.id.mainFragment_tabCompetition, competitionTab, tabId)
+                    .commit();
                 newTab = competitionTab;
-        	}
+            }
         }
         if (oldTab != newTab) {
-        	newTab.onTabVisible();
+            newTab.onTabVisible();
         }
         currentTab = tabId;
     }

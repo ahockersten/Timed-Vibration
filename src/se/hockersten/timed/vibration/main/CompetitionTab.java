@@ -34,137 +34,137 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class CompetitionTab extends Fragment implements Tab {
-	// Constants used when saving a bundle for this Fragment 
-	private static final String COMPETING = "COMPETING";
-	private static final String TAPTIMES = "TAPTIMES";
-	
-	private View root;
-	/** True if competition mode is currently turned on */
-	private boolean competing;
-	/** The time the "tap me" button was last pressed */
-	private Calendar lastPress;
-	/** 
-	 * This WakeLock is grabbed whenever competition mode is turned on and 
-	 * this tab is being displayed. This is to allow the user to always be
-	 * be able to tap the button when it is visible. 
-	 */
-	private PowerManager.WakeLock wakeLock;
-	/** The last 5 taps, in milliseconds. The latest tap is first in the list */
-	private LinkedList<Long> tapTimes;
-	
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		tapTimes = new LinkedList<Long>();
-		if (savedInstanceState != null) {
-			competing = savedInstanceState.getBoolean(COMPETING);
-			long[] tempArray = savedInstanceState.getLongArray(TAPTIMES);
-			for (int i = 0; i < tempArray.length; i++) {
-				tapTimes.add(tempArray[i]);
-			}
-		}
+    // Constants used when saving a bundle for this Fragment 
+    private static final String COMPETING = "COMPETING";
+    private static final String TAPTIMES = "TAPTIMES";
+    
+    private View root;
+    /** True if competition mode is currently turned on */
+    private boolean competing;
+    /** The time the "tap me" button was last pressed */
+    private Calendar lastPress;
+    /** 
+     * This WakeLock is grabbed whenever competition mode is turned on and 
+     * this tab is being displayed. This is to allow the user to always be
+     * be able to tap the button when it is visible. 
+     */
+    private PowerManager.WakeLock wakeLock;
+    /** The last 5 taps, in milliseconds. The latest tap is first in the list */
+    private LinkedList<Long> tapTimes;
+    
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        tapTimes = new LinkedList<Long>();
+        if (savedInstanceState != null) {
+            competing = savedInstanceState.getBoolean(COMPETING);
+            long[] tempArray = savedInstanceState.getLongArray(TAPTIMES);
+            for (int i = 0; i < tempArray.length; i++) {
+                tapTimes.add(tempArray[i]);
+            }
+        }
 
-		root = inflater.inflate(R.layout.main_competition, container, false);
-		PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
-		wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CompetitionTab.onResume()");
-		updateUI();
-		return root;
-	}
+        root = inflater.inflate(R.layout.main_competition, container, false);
+        PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CompetitionTab.onResume()");
+        updateUI();
+        return root;
+    }
 
-	@Override
-	public void onSaveInstanceState(Bundle b) {
-		super.onSaveInstanceState(b);
-		b.putBoolean(COMPETING, competing);
-		long[] tempArray = new long[tapTimes.size()];
-		for (int i = 0; i < tapTimes.size(); i++) {
-			tempArray[i] = tapTimes.get(i);
-		}
-		b.putLongArray(TAPTIMES, tempArray);
-	}
+    @Override
+    public void onSaveInstanceState(Bundle b) {
+        super.onSaveInstanceState(b);
+        b.putBoolean(COMPETING, competing);
+        long[] tempArray = new long[tapTimes.size()];
+        for (int i = 0; i < tapTimes.size(); i++) {
+            tempArray[i] = tapTimes.get(i);
+        }
+        b.putLongArray(TAPTIMES, tempArray);
+    }
 
-	@Override
-	public void onResume() {
-		Button startBtn = (Button) root.findViewById(R.id.mainCompetition_btnStart);
-		startBtn.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				flipCompeting();
-				updateUI();
-			}
-		});
-		
-		Button tapBtn = (Button) root.findViewById(R.id.mainCompetition_btnTap);
-		tapBtn.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				assert(!competing); // this button should be greyed out when not competing, so being able to click it indicates something is wrong
-				Calendar currentTime = Calendar.getInstance();
-				
-				long timeDiff = currentTime.getTimeInMillis() - lastPress.getTimeInMillis();
-				if (tapTimes.size() > 4) {
-					tapTimes.removeLast();
-				}
-				tapTimes.addFirst(timeDiff);
-				lastPress = currentTime;
-				
-				updateUI();
-			}
-		});
-		super.onResume();
-	}
-	
-	public void flipCompeting() {
-		if (competing) {
-			stopCompetition();
-		}
-		else {
-			startCompetition();
-		}
-	}
-	
-	public void startCompetition() {
-		 wakeLock.acquire();
-		 competing = true;
-		 lastPress = Calendar.getInstance();
-	}
-	
-	public void stopCompetition() {
-		competing = false;
-		wakeLock.release();
-	}
-	
-	private void updateUI() {
-		Button startBtn = (Button) root.findViewById(R.id.mainCompetition_btnStart);
-		Button tapBtn = (Button) root.findViewById(R.id.mainCompetition_btnTap);
-		tapBtn.setEnabled(competing);
-		if (competing) {
-			startBtn.setText(R.string.stop_counting);
-		}
-		else {
-			startBtn.setText(R.string.start_counting);
-		}
-		Resources res = getResources();
-		StringBuffer resultText = new StringBuffer(res.getString(R.string.last_results));
-		for (long tapTime : tapTimes) {
-			long minDiff = tapTime / 60000;
-			long secDiff = tapTime / 1000 - minDiff * 60;
-			long milliDiff = tapTime - secDiff * 1000 - minDiff * 60000;
-			resultText.append("\n" + minDiff + " " + res.getString(R.string.minutes) + ", " + 
-					 		  secDiff + " " + res.getString(R.string.seconds) + ", " + 
-					 		  milliDiff + " " + res.getString(R.string.milliseconds));
-		}
-		TextView lastResultTv = (TextView) root.findViewById(R.id.mainCompetition_tvLastResult);
-		lastResultTv.setText(resultText);
-	}
+    @Override
+    public void onResume() {
+        Button startBtn = (Button) root.findViewById(R.id.mainCompetition_btnStart);
+        startBtn.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                flipCompeting();
+                updateUI();
+            }
+        });
+        
+        Button tapBtn = (Button) root.findViewById(R.id.mainCompetition_btnTap);
+        tapBtn.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                assert(!competing); // this button should be greyed out when not competing, so being able to click it indicates something is wrong
+                Calendar currentTime = Calendar.getInstance();
+                
+                long timeDiff = currentTime.getTimeInMillis() - lastPress.getTimeInMillis();
+                if (tapTimes.size() > 4) {
+                    tapTimes.removeLast();
+                }
+                tapTimes.addFirst(timeDiff);
+                lastPress = currentTime;
+                
+                updateUI();
+            }
+        });
+        super.onResume();
+    }
+    
+    public void flipCompeting() {
+        if (competing) {
+            stopCompetition();
+        }
+        else {
+            startCompetition();
+        }
+    }
+    
+    public void startCompetition() {
+         wakeLock.acquire();
+         competing = true;
+         lastPress = Calendar.getInstance();
+    }
+    
+    public void stopCompetition() {
+        competing = false;
+        wakeLock.release();
+    }
+    
+    private void updateUI() {
+        Button startBtn = (Button) root.findViewById(R.id.mainCompetition_btnStart);
+        Button tapBtn = (Button) root.findViewById(R.id.mainCompetition_btnTap);
+        tapBtn.setEnabled(competing);
+        if (competing) {
+            startBtn.setText(R.string.stop_counting);
+        }
+        else {
+            startBtn.setText(R.string.start_counting);
+        }
+        Resources res = getResources();
+        StringBuffer resultText = new StringBuffer(res.getString(R.string.last_results));
+        for (long tapTime : tapTimes) {
+            long minDiff = tapTime / 60000;
+            long secDiff = tapTime / 1000 - minDiff * 60;
+            long milliDiff = tapTime - secDiff * 1000 - minDiff * 60000;
+            resultText.append("\n" + minDiff + " " + res.getString(R.string.minutes) + ", " + 
+                               secDiff + " " + res.getString(R.string.seconds) + ", " + 
+                               milliDiff + " " + res.getString(R.string.milliseconds));
+        }
+        TextView lastResultTv = (TextView) root.findViewById(R.id.mainCompetition_tvLastResult);
+        lastResultTv.setText(resultText);
+    }
 
-	@Override
-	public void onTabVisible() {
-		if (competing) {
-			wakeLock.acquire();
-		}
-	}
+    @Override
+    public void onTabVisible() {
+        if (competing) {
+            wakeLock.acquire();
+        }
+    }
 
-	@Override
-	public void onTabInvisible() {
-		if (competing) {
-			wakeLock.release();
-		}
-	}
+    @Override
+    public void onTabInvisible() {
+        if (competing) {
+            wakeLock.release();
+        }
+    }
 }

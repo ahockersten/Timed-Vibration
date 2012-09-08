@@ -23,25 +23,25 @@ import android.content.Intent;
 import android.os.Vibrator;
 
 public class Vibrate extends BroadcastReceiver {
-	public static final String TIMES_TO_VIBRATE = "TIMES_TO_VIBRATE";
-	private static boolean silenced = false;
-	
-	public static void setSilenced(boolean silenced) {
-		Vibrate.silenced = silenced;
-	}
-	
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		if (silenced) {
-			return;
-		}
-		Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-		int times = intent.getIntExtra(TIMES_TO_VIBRATE, 1); // fuck this is not working
-		long[] pattern = new long[times*2];
-		pattern[0] = 0;
-		for (int i = 1; i < times*2; i++) {
-			pattern[i] = 100;
-		}
-		vibrator.vibrate(pattern, -1);
-	}
+    public static final String TIMES_TO_VIBRATE = "TIMES_TO_VIBRATE";
+    private static boolean silenced = false;
+    
+    public static void setSilenced(boolean silenced) {
+        Vibrate.silenced = silenced;
+    }
+    
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (silenced) {
+            return;
+        }
+        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        int times = intent.getIntExtra(TIMES_TO_VIBRATE, 1); // fuck this is not working
+        long[] pattern = new long[times*2];
+        pattern[0] = 0;
+        for (int i = 1; i < times*2; i++) {
+            pattern[i] = 100;
+        }
+        vibrator.vibrate(pattern, -1);
+    }
 }
