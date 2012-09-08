@@ -54,11 +54,11 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
-        
+
         host.setOnTabChangedListener(this);
 		host.setCurrentTabByTag(currentTab);
-		
-        updateTab(currentTab);
+
+        onTabChanged(currentTab);
     }
     
     private TabSpec newTab(String tag, String labelId, int tabContentId) {
@@ -70,11 +70,6 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
 
     @Override
     public void onTabChanged(String tabId) {
-        updateTab(tabId);
-        currentTab = tabId;
-    }
-
-    private void updateTab(String tabId) {
         FragmentManager fragmentManager = getFragmentManager();
         Tab oldTab = (Tab) fragmentManager.findFragmentByTag(currentTab);
         Tab newTab = (Tab) fragmentManager.findFragmentByTag(tabId);
@@ -100,5 +95,6 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
         if (oldTab != newTab) {
         	newTab.onTabVisible();
         }
+        currentTab = tabId;
     }
 }
