@@ -18,6 +18,8 @@
 package se.hockersten.timed.vibration.main;
 
 import se.hockersten.timed.vibration.R;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -58,12 +60,7 @@ public class PracticeTab extends Fragment implements Tab {
             spinSingle.setSelection(savedInstanceState.getInt(SPIN_SINGLE_POS));
             spinDouble.setSelection(savedInstanceState.getInt(SPIN_DOUBLE_POS));
         }
-        else {
-            spinSingle.setSelection(1); // 1 minute by default
-            spinDouble.setSelection(3); // 5 minutes by default
-        }
 
-        updateUI();
         return root;
     }
 
@@ -86,8 +83,25 @@ public class PracticeTab extends Fragment implements Tab {
                 updateUI();
             }
         });
-
+        SharedPreferences sharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        Spinner spinSingle = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalSingle);
+        spinSingle.setSelection(sharedPrefs.getInt(SPIN_SINGLE_POS, 1)); // 1 minute by default
+        Spinner spinDouble = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalDouble);
+        spinDouble.setSelection(sharedPrefs.getInt(SPIN_DOUBLE_POS, 3)); // 5 minutes by default
+        updateUI();
         super.onResume();
+    }
+
+    @Override
+    public void onStop() {
+        SharedPreferences sharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = sharedPrefs.edit();
+        Spinner spinSingle = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalSingle);
+        prefsEditor.putInt(SPIN_SINGLE_POS, spinSingle.getSelectedItemPosition());
+        Spinner spinDouble = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalDouble);
+        prefsEditor.putInt(SPIN_DOUBLE_POS, spinDouble.getSelectedItemPosition());
+        prefsEditor.commit();
+        super.onStop();
     }
 
     /**

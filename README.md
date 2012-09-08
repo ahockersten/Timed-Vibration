@@ -16,17 +16,19 @@ Future improvements/bug fixes
 
 Known bugs
 ----------
+- In "competition mode", press "start counting". Switch away from the app.
+  Switch back. Press "stop counting". Crash.
 
 Future improvements
 -------------------
-- Should save settings for single and double vibration on exit
-- Should save last 5 results for practice mode on exit
 - Add an options menu to set vibration time length
 - Add a proper icon
 - Add a sound that plays when you are close to a set goal in
   "Competition mode"
 - Make the UI prettier
 - The "tap me" button should be a pretty icon instead of a button
+- Does it make sense to save stuff in the bundle as well as in the prefs?
+  Probably not, but I need to look into it
 
 Author info
 ===========

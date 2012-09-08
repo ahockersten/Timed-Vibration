@@ -22,6 +22,7 @@ import java.util.LinkedList;
 
 import se.hockersten.timed.vibration.R;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -58,7 +59,6 @@ public class CompetitionTab extends Fragment implements Tab {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        tapTimes = new LinkedList<Long>();
         PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CompetitionTab.onCreateView()");
         if (savedInstanceState != null) {
@@ -76,7 +76,6 @@ public class CompetitionTab extends Fragment implements Tab {
         }
 
         root = inflater.inflate(R.layout.main_competition, container, false);
-        updateUI();
         return root;
     }
 
@@ -100,6 +99,12 @@ public class CompetitionTab extends Fragment implements Tab {
 
     @Override
     public void onResume() {
+        tapTimes = new LinkedList<Long>();
+        SharedPreferences sharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        for (int i = 0; i < 5; i++) {
+            tapTimes.add(i, sharedPrefs.getLong(LAST_PRESS + i, 0));
+        }
+
         Button startBtn = (Button) root.findViewById(R.id.mainCompetition_btnStart);
         startBtn.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -124,7 +129,19 @@ public class CompetitionTab extends Fragment implements Tab {
                 updateUI();
             }
         });
+        updateUI();
         super.onResume();
+    }
+
+    @Override
+    public void onStop() {
+        SharedPreferences sharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = sharedPrefs.edit();
+        for (int i = 0; i < 5; i++) {
+            prefsEditor.putLong(LAST_PRESS + i, lastPress.get(i));
+        }
+        prefsEditor.commit();
+        super.onStop();
     }
 
     public void flipCompeting() {
@@ -160,12 +177,14 @@ public class CompetitionTab extends Fragment implements Tab {
         Resources res = getResources();
         StringBuffer resultText = new StringBuffer(res.getString(R.string.last_results));
         for (long tapTime : tapTimes) {
-            long minDiff = tapTime / 60000;
-            long secDiff = tapTime / 1000 - minDiff * 60;
-            long milliDiff = tapTime - secDiff * 1000 - minDiff * 60000;
-            resultText.append("\n" + minDiff + " " + res.getString(R.string.minutes) + ", " +
-                               secDiff + " " + res.getString(R.string.seconds) + ", " +
-                               milliDiff + " " + res.getString(R.string.milliseconds));
+            if (tapTime != 0) {
+                long minDiff = tapTime / 60000;
+                long secDiff = tapTime / 1000 - minDiff * 60;
+                long milliDiff = tapTime - secDiff * 1000 - minDiff * 60000;
+                resultText.append("\n" + minDiff + " " + res.getString(R.string.minutes) + ", " +
+                                   secDiff + " " + res.getString(R.string.seconds) + ", " +
+                                   milliDiff + " " + res.getString(R.string.milliseconds));
+            }
         }
         TextView lastResultTv = (TextView) root.findViewById(R.id.mainCompetition_tvLastResult);
         lastResultTv.setText(resultText);
