@@ -34,24 +34,24 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class CompetitionTab extends Fragment implements Tab {
-    // Constants used when saving a bundle for this Fragment 
+    // Constants used when saving a bundle for this Fragment
     private static final String COMPETING = "COMPETING";
     private static final String TAPTIMES = "TAPTIMES";
-    
+
     private View root;
     /** True if competition mode is currently turned on */
     private boolean competing;
     /** The time the "tap me" button was last pressed */
     private Calendar lastPress;
-    /** 
-     * This WakeLock is grabbed whenever competition mode is turned on and 
+    /**
+     * This WakeLock is grabbed whenever competition mode is turned on and
      * this tab is being displayed. This is to allow the user to always be
-     * be able to tap the button when it is visible. 
+     * be able to tap the button when it is visible.
      */
     private PowerManager.WakeLock wakeLock;
     /** The last 5 taps, in milliseconds. The latest tap is first in the list */
     private LinkedList<Long> tapTimes;
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         tapTimes = new LinkedList<Long>();
@@ -90,26 +90,26 @@ public class CompetitionTab extends Fragment implements Tab {
                 updateUI();
             }
         });
-        
+
         Button tapBtn = (Button) root.findViewById(R.id.mainCompetition_btnTap);
         tapBtn.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 assert(!competing); // this button should be greyed out when not competing, so being able to click it indicates something is wrong
                 Calendar currentTime = Calendar.getInstance();
-                
+
                 long timeDiff = currentTime.getTimeInMillis() - lastPress.getTimeInMillis();
                 if (tapTimes.size() > 4) {
                     tapTimes.removeLast();
                 }
                 tapTimes.addFirst(timeDiff);
                 lastPress = currentTime;
-                
+
                 updateUI();
             }
         });
         super.onResume();
     }
-    
+
     public void flipCompeting() {
         if (competing) {
             stopCompetition();
@@ -118,18 +118,18 @@ public class CompetitionTab extends Fragment implements Tab {
             startCompetition();
         }
     }
-    
+
     public void startCompetition() {
          wakeLock.acquire();
          competing = true;
          lastPress = Calendar.getInstance();
     }
-    
+
     public void stopCompetition() {
         competing = false;
         wakeLock.release();
     }
-    
+
     private void updateUI() {
         Button startBtn = (Button) root.findViewById(R.id.mainCompetition_btnStart);
         Button tapBtn = (Button) root.findViewById(R.id.mainCompetition_btnTap);
@@ -146,8 +146,8 @@ public class CompetitionTab extends Fragment implements Tab {
             long minDiff = tapTime / 60000;
             long secDiff = tapTime / 1000 - minDiff * 60;
             long milliDiff = tapTime - secDiff * 1000 - minDiff * 60000;
-            resultText.append("\n" + minDiff + " " + res.getString(R.string.minutes) + ", " + 
-                               secDiff + " " + res.getString(R.string.seconds) + ", " + 
+            resultText.append("\n" + minDiff + " " + res.getString(R.string.minutes) + ", " +
+                               secDiff + " " + res.getString(R.string.seconds) + ", " +
                                milliDiff + " " + res.getString(R.string.milliseconds));
         }
         TextView lastResultTv = (TextView) root.findViewById(R.id.mainCompetition_tvLastResult);

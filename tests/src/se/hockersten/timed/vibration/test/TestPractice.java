@@ -52,7 +52,7 @@ public class TestPractice extends AndroidTestCase {
             assertEquals(60 - i, callNormalizedMinuteDelay(i, 60));
         }
     }
-    
+
     private int callNormalizedMinuteDelay(int currentMinute, int delay) {
         Class<?> args[] = new Class[] {Integer.TYPE, Integer.TYPE};
         try {

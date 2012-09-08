@@ -25,11 +25,11 @@ import android.os.Vibrator;
 public class Vibrate extends BroadcastReceiver {
     public static final String TIMES_TO_VIBRATE = "TIMES_TO_VIBRATE";
     private static boolean silenced = false;
-    
+
     public static void setSilenced(boolean silenced) {
         Vibrate.silenced = silenced;
     }
-    
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (silenced) {

@@ -37,7 +37,7 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
     private View root;
     private TabHost host;
     private String currentTab = TAB_PRACTICE;
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.main_fragment, container, false);
@@ -45,12 +45,12 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
 
         host.setup();
         Resources res = getResources();
-        host.addTab(newTab(TAB_PRACTICE, res.getString(R.string.Practice), R.id.mainFragment_tabPractice)); 
+        host.addTab(newTab(TAB_PRACTICE, res.getString(R.string.Practice), R.id.mainFragment_tabPractice));
         host.addTab(newTab(TAB_COMPETITION, res.getString(R.string.Competition), R.id.mainFragment_tabCompetition));
 
         return root;
     }
-    
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -67,7 +67,7 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
      * @param tag The tag used for this tab.
      * @param labelId The label which should be used in the UI for this tab
      * @param tabContentId The tab's layout
-     * @return A TabSpec corresponding to this Tab 
+     * @return A TabSpec corresponding to this Tab
      */
     private TabSpec newTab(String tag, String labelId, int tabContentId) {
         TabSpec tabSpec = host.newTabSpec(tag);

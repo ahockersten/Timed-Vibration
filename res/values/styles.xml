@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Copyright 2012, Anders Höckersten
 
 This file is part of Timed Vibration.
@@ -18,5 +18,7 @@ along with Timed Vibration.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
 <resources>
+
     <style name="AppTheme" parent="android:Theme.Light" />
+
 </resources>

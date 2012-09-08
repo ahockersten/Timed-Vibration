@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 
+<!--
 Copyright 2012, Anders Höckersten
 
 This file is part of Timed Vibration.
@@ -18,21 +18,21 @@ You should have received a copy of the GNU General Public License
 along with Timed Vibration.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
-	
-	<TextView
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
         android:id="@+id/mainPractice.tvIntervalSingle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@+string/interval_to_vibrate_at" />
-	
+
     <Spinner
         android:id="@+id/mainPractice.spinIntervalSingle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    
+
     <TextView
         android:id="@+id/mainPractice.tvIntervalDouble"
         android:layout_width="wrap_content"
@@ -49,4 +49,5 @@ along with Timed Vibration.  If not, see <http://www.gnu.org/licenses/>.
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@+string/start_counting" />
+
 </LinearLayout>

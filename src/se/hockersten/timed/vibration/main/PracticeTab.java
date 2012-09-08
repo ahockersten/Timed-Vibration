@@ -44,7 +44,7 @@ public class PracticeTab extends Fragment implements Tab {
     private View root;
     private boolean counting = false;
     private ArrayList<PendingIntent> vibrations;
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.main_practice, container, false);
@@ -56,7 +56,7 @@ public class PracticeTab extends Fragment implements Tab {
         spinSingle.setAdapter(adapter);
 
         Spinner spinDouble = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalDouble);
-        ArrayAdapter<CharSequence> adapter2 = 
+        ArrayAdapter<CharSequence> adapter2 =
             ArrayAdapter.createFromResource(getActivity(), R.array.time_array, android.R.layout.simple_spinner_item);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinDouble.setAdapter(adapter2);
@@ -139,7 +139,7 @@ public class PracticeTab extends Fragment implements Tab {
         }
         vibrations.clear();
     }
-    
+
     /**
      * Adds a vibration at the given interval.
      * @param interval The interval to vibrate at (in minutes)
@@ -187,7 +187,7 @@ public class PracticeTab extends Fragment implements Tab {
      * minutes, this would return a number between 1 and 5 which, when this
      * delay is applied, would end at the next appropriate 5 minute boundary
      * (so 3 would delay 2 minutes, 6 would delay 4 minutes and so on).
-     *   
+     *
      * @param currentMinute The current clock minute
      * @param interval The interval to vibrate at
      * @return The number of minutes to wait until the first vibration

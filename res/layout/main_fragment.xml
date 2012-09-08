@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 
+<!--
 Copyright 2012, Anders Höckersten
 
 This file is part of Timed Vibration.
@@ -18,10 +18,10 @@ You should have received a copy of the GNU General Public License
 along with Timed Vibration.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
-	
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
     <TabHost
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
@@ -31,12 +31,12 @@ along with Timed Vibration.  If not, see <http://www.gnu.org/licenses/>.
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical" >
-        
-	        <TabWidget
-	            android:id="@android:id/tabs"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content" >
-	        </TabWidget>
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+            </TabWidget>
 
             <FrameLayout
                 android:id="@android:id/tabcontent"
@@ -54,8 +54,8 @@ along with Timed Vibration.  If not, see <http://www.gnu.org/licenses/>.
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" >
                 </FrameLayout>
-
             </FrameLayout>
         </LinearLayout>
     </TabHost>
+
 </LinearLayout>
