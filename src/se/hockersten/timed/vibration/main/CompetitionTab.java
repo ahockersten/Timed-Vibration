@@ -36,7 +36,7 @@ import android.widget.TextView;
 public class CompetitionTab extends Fragment implements Tab {
     // Constants used when saving a bundle for this Fragment
     private static final String COMPETING = "COMPETING";
-    private static final String TAPTIMES = "TAPTIMES";
+    private static final String TAP_TIMES = "TAP_TIMES";
     private static final String LAST_PRESS = "LAST_PRESS";
 
     private View root;
@@ -60,7 +60,7 @@ public class CompetitionTab extends Fragment implements Tab {
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CompetitionTab.onCreateView()");
         if (savedInstanceState != null) {
             competing = savedInstanceState.getBoolean(COMPETING);
-            long[] tempArray = savedInstanceState.getLongArray(TAPTIMES);
+            long[] tempArray = savedInstanceState.getLongArray(TAP_TIMES);
             for (int i = 0; i < tempArray.length; i++) {
                 tapTimes.add(tempArray[i]);
             }
@@ -84,7 +84,7 @@ public class CompetitionTab extends Fragment implements Tab {
         for (int i = 0; i < tapTimes.size(); i++) {
             tempArray[i] = tapTimes.get(i);
         }
-        b.putLongArray(TAPTIMES, tempArray);
+        b.putLongArray(TAP_TIMES, tempArray);
         b.putSerializable(LAST_PRESS, lastPress);
         if (competing) {
             // we need to release the wakelock here, because we can't save it
