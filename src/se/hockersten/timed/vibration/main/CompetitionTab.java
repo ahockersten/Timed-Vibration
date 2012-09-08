@@ -35,7 +35,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class CompetitionTab extends Fragment implements Tab {
-    // Constants used when saving a bundle for this Fragment
+    // Constants used when saving state for this Fragment
     private static final String COMPETING = "COMPETING";
     private static final String TAP_TIMES = "TAP_TIMES";
     private static final String LAST_PRESS = "LAST_PRESS";
@@ -62,14 +62,8 @@ public class CompetitionTab extends Fragment implements Tab {
         PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CompetitionTab.onCreateView()");
         if (savedInstanceState != null) {
-            tapTimes = new LinkedList<Long>();
             competing = savedInstanceState.getBoolean(COMPETING);
             visible = savedInstanceState.getBoolean(VISIBLE);
-            long[] tempArray = savedInstanceState.getLongArray(TAP_TIMES);
-            for (int i = 0; i < tempArray.length; i++) {
-                tapTimes.add(tempArray[i]);
-            }
-            lastPress = (Calendar) savedInstanceState.getSerializable(LAST_PRESS);
         }
 
         root = inflater.inflate(R.layout.main_competition, container, false);
@@ -81,11 +75,6 @@ public class CompetitionTab extends Fragment implements Tab {
         super.onSaveInstanceState(b);
         b.putBoolean(COMPETING, competing);
         b.putBoolean(VISIBLE, visible);
-        long[] tempArray = new long[tapTimes.size()];
-        for (int i = 0; i < tapTimes.size(); i++) {
-            tempArray[i] = tapTimes.get(i);
-        }
-        b.putLongArray(TAP_TIMES, tempArray);
         b.putSerializable(LAST_PRESS, lastPress);
     }
 
@@ -94,7 +83,7 @@ public class CompetitionTab extends Fragment implements Tab {
         tapTimes = new LinkedList<Long>();
         SharedPreferences sharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
         for (int i = 0; i < 5; i++) {
-            tapTimes.add(i, sharedPrefs.getLong(LAST_PRESS + i, 0));
+            tapTimes.add(i, sharedPrefs.getLong(TAP_TIMES + i, 0));
         }
 
         Button startBtn = (Button) root.findViewById(R.id.mainCompetition_btnStart);
@@ -135,7 +124,7 @@ public class CompetitionTab extends Fragment implements Tab {
         SharedPreferences sharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = sharedPrefs.edit();
         for (int i = 0; i < tapTimes.size(); i++) {
-            prefsEditor.putLong(LAST_PRESS + i, tapTimes.get(i));
+            prefsEditor.putLong(TAP_TIMES + i, tapTimes.get(i));
         }
         prefsEditor.commit();
 

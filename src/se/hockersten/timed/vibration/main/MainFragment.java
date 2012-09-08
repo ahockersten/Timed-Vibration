@@ -36,7 +36,7 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
     private static final String TAB_PRACTICE = "PRACTICE";
     private static final String TAB_COMPETITION = "COMPETITION";
 
-    // Constants used when saving a bundle for this Fragment
+    // Constants used when saving state for this Fragment
     private static final String CURRENT_TAB = "CURRENT_TAB";
 
     private View root;
@@ -54,10 +54,6 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
         host.addTab(newTab(TAB_PRACTICE, res.getString(R.string.Practice), R.id.mainFragment_tabPractice));
         host.addTab(newTab(TAB_COMPETITION, res.getString(R.string.Competition), R.id.mainFragment_tabCompetition));
 
-        if (savedInstanceState != null) {
-            currentTab = savedInstanceState.getString(CURRENT_TAB);
-        }
-
         return root;
     }
 
@@ -67,14 +63,7 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
 
         host.setOnTabChangedListener(this);
         host.setCurrentTabByTag(currentTab);
-
         onTabChanged(currentTab);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle b) {
-        super.onSaveInstanceState(b);
-        b.putString(CURRENT_TAB, currentTab);
     }
 
     @Override

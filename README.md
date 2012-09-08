@@ -25,8 +25,6 @@ Future improvements
   "Competition mode"
 - Make the UI prettier
 - The "tap me" button should be a pretty icon instead of a button
-- Does it make sense to save stuff in the bundle as well as in the prefs?
-  Probably not, but I need to look into it
 
 Author info
 ===========

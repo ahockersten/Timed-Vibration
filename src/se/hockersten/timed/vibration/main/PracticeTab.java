@@ -31,7 +31,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 public class PracticeTab extends Fragment implements Tab {
-    // Constants used when saving a bundle for this Fragment
+    // Constants used when saving state for this Fragment
     private static String COUNTING = "COUNTING";
     private static String SPIN_SINGLE_POS = "SPIN_SINGLE_POS";
     private static String SPIN_DOUBLE_POS = "SPIN_DOUBLE_POS";
@@ -57,8 +57,6 @@ public class PracticeTab extends Fragment implements Tab {
 
         if (savedInstanceState != null) {
             counting = savedInstanceState.getBoolean(COUNTING);
-            spinSingle.setSelection(savedInstanceState.getInt(SPIN_SINGLE_POS));
-            spinDouble.setSelection(savedInstanceState.getInt(SPIN_DOUBLE_POS));
         }
 
         return root;
@@ -68,10 +66,6 @@ public class PracticeTab extends Fragment implements Tab {
     public void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
         b.putBoolean(COUNTING, counting);
-        Spinner spinSingle = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalSingle);
-        Spinner spinDouble = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalDouble);
-        b.putInt(SPIN_SINGLE_POS, spinSingle.getSelectedItemPosition());
-        b.putInt(SPIN_DOUBLE_POS, spinDouble.getSelectedItemPosition());
     }
 
     @Override
