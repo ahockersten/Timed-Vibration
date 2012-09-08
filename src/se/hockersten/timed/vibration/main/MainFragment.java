@@ -81,23 +81,23 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
     }
  
     private void updateTab(String tabId) {
-        FragmentManager fm = getFragmentManager();
-        Tab oldTab = (Tab) fm.findFragmentByTag(currentTab);
-        Tab newTab = (Tab) fm.findFragmentByTag(tabId);
+        FragmentManager fragmentManager = getFragmentManager();
+        Tab oldTab = (Tab) fragmentManager.findFragmentByTag(currentTab);
+        Tab newTab = (Tab) fragmentManager.findFragmentByTag(tabId);
         if (oldTab != null && oldTab != newTab) {
         	oldTab.onTabInvisible();
         }
         if (newTab == null) {
         	if (TAB_PRACTICE.equals(tabId)) {
-        		PracticeTab practiceTab = new PracticeTab(); 
-                fm.beginTransaction()
+        		PracticeTab practiceTab = new PracticeTab();
+        		fragmentManager.beginTransaction()
                 	.replace(R.id.mainFragment_tabPractice, practiceTab, tabId)
                 	.commit();
                 newTab = practiceTab;
         	}
         	if (TAB_COMPETITION.equals(tabId)) {
-        		CompetitionTab competitionTab = new CompetitionTab(); 
-                fm.beginTransaction()
+        		CompetitionTab competitionTab = new CompetitionTab();
+        		fragmentManager.beginTransaction()
                 	.replace(R.id.mainFragment_tabCompetition, competitionTab, tabId)
                 	.commit();
                 newTab = competitionTab;
