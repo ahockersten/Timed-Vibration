@@ -34,13 +34,22 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class CompetitionTab extends Fragment implements Tab {
+	// Constants used when saving a bundle for this Fragment 
 	private static final String COMPETING = "COMPETING";
 	private static final String TAPTIMES = "TAPTIMES";
 	
 	private View root;
+	/** True if competition mode is currently turned on */
 	private boolean competing;
+	/** The time the "tap me" button was last pressed */
 	private Calendar lastPress;
+	/** 
+	 * This WakeLock is grabbed whenever competition mode is turned on and 
+	 * this tab is being displayed. This is to allow the user to always be
+	 * be able to tap the button when it is visible. 
+	 */
 	private PowerManager.WakeLock wakeLock;
+	/** The last 5 taps, in milliseconds. The latest tap is first in the list */
 	private LinkedList<Long> tapTimes;
 	
 	@Override
@@ -85,7 +94,7 @@ public class CompetitionTab extends Fragment implements Tab {
 		Button tapBtn = (Button) root.findViewById(R.id.mainCompetition_btnTap);
 		tapBtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				assert(!competing); // should be greyed out when not competing
+				assert(!competing); // this button should be greyed out when not competing, so being able to click it indicates something is wrong
 				Calendar currentTime = Calendar.getInstance();
 				
 				long timeDiff = currentTime.getTimeInMillis() - lastPress.getTimeInMillis();
