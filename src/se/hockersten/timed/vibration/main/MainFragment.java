@@ -18,6 +18,8 @@
 package se.hockersten.timed.vibration.main;
 
 import se.hockersten.timed.vibration.R;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -73,6 +75,24 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
     public void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
         b.putString(CURRENT_TAB, currentTab);
+    }
+
+    @Override
+    public void onResume() {
+        SharedPreferences sharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        currentTab = sharedPrefs.getString(CURRENT_TAB, TAB_PRACTICE);
+        host.setCurrentTabByTag(currentTab);
+        onTabChanged(currentTab);
+        super.onResume();
+    }
+
+    @Override
+    public void onStop() {
+        SharedPreferences sharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = sharedPrefs.edit();
+        prefsEditor.putString(CURRENT_TAB, currentTab);
+        prefsEditor.commit();
+        super.onStop();
     }
 
     /**
