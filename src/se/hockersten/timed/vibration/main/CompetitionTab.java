@@ -37,6 +37,7 @@ public class CompetitionTab extends Fragment implements Tab {
     // Constants used when saving a bundle for this Fragment
     private static final String COMPETING = "COMPETING";
     private static final String TAPTIMES = "TAPTIMES";
+    private static final String LAST_PRESS = "LAST_PRESS";
 
     private View root;
     /** True if competition mode is currently turned on */
@@ -55,17 +56,22 @@ public class CompetitionTab extends Fragment implements Tab {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         tapTimes = new LinkedList<Long>();
+        PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CompetitionTab.onCreateView()");
         if (savedInstanceState != null) {
             competing = savedInstanceState.getBoolean(COMPETING);
             long[] tempArray = savedInstanceState.getLongArray(TAPTIMES);
             for (int i = 0; i < tempArray.length; i++) {
                 tapTimes.add(tempArray[i]);
             }
+            lastPress = (Calendar) savedInstanceState.getSerializable(LAST_PRESS);
+            if (competing) {
+                // take the new wakelock if we are competing again
+                wakeLock.acquire();
+            }
         }
 
         root = inflater.inflate(R.layout.main_competition, container, false);
-        PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CompetitionTab.onResume()");
         updateUI();
         return root;
     }
@@ -79,6 +85,12 @@ public class CompetitionTab extends Fragment implements Tab {
             tempArray[i] = tapTimes.get(i);
         }
         b.putLongArray(TAPTIMES, tempArray);
+        b.putSerializable(LAST_PRESS, lastPress);
+        if (competing) {
+            // we need to release the wakelock here, because we can't save it
+            // however, we make sure to take a new wakelock when recreating
+            wakeLock.release();
+        }
     }
 
     @Override
