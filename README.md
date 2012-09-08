@@ -14,27 +14,23 @@ long has passed since the last press.
 Future improvements/bug fixes
 =============================
 
-Bug fixes
----------
-- In "Competition mode", two timers happening at the same time will produce
-  sporadic vibration results. Need to ignore one of them when both are
-  happening.
-- Double vibration doesn't actually work now because I broke it
+Known bugs
+----------
 
 Future improvements
 -------------------
 - Add a proper icon
-- Add a sound that plays when you are close to a set goal in 
+- Add a sound that plays when you are close to a set goal in
   "Competition mode"
 - Make the UI prettier
 - The "tap me" button should be a pretty icon instead of a button
 - Research whether the call to setRetainInstance(true) in MainFragment still
-  makes sense 
+  makes sense
 
 Author info
 ===========
 You may reach me at anders@hockersten.se
- 
+
 License
 =======
 Copyright 2012, Anders Höckersten

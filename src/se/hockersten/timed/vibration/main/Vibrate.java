@@ -17,35 +17,79 @@
 
 package se.hockersten.timed.vibration.main;
 
+import java.util.Calendar;
+
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Vibrator;
 
 public class Vibrate extends BroadcastReceiver {
-    public static final String TIMES_TO_VIBRATE = "TIMES_TO_VIBRATE";
-    private static boolean enabled = false;
+    private static int singleVibrationInterval;
+    private static int doubleVibrationInterval;
+    private static PendingIntent vibrationTask;
 
     /**
      * Enables or disables vibration globally.
      * @param enabled Whether vibration should be enabled or disabled
+     * @param owner The Activity that owns the vibration
      */
-    public static void setEnabled(boolean enabled) {
-        Vibrate.enabled = enabled;
+    public static void setEnabled(boolean enabled, Activity owner) {
+        AlarmManager alarmManager = (AlarmManager) owner.getSystemService(Context.ALARM_SERVICE);
+        if (enabled) {
+            Calendar nextMinute = Calendar.getInstance();
+            Intent i = new Intent(owner, Vibrate.class);
+            vibrationTask = PendingIntent.getBroadcast(owner, 0, i, 0);
+            nextMinute.add(Calendar.MINUTE, 1);
+            nextMinute.set(Calendar.SECOND, 0);
+            // DEBUG: vibrate per second instead of per minute
+            //nextMinute.add(Calendar.SECOND, 1);
+            nextMinute.set(Calendar.MILLISECOND, 0);
+            long firstVibration = nextMinute.getTimeInMillis();
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibration, 60000, vibrationTask);
+            // DEBUG: vibrate per second instead of per minute
+            //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstVibration, 1000, vibrationTask);
+        }
+        else {
+            alarmManager.cancel(vibrationTask);
+        }
+    }
+
+    public static void setSingleVibrationInterval(int interval) {
+        singleVibrationInterval = interval;
+    }
+
+    public static void setDoubleVibrationInterval(int interval) {
+        doubleVibrationInterval = interval;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (!enabled) {
-            return;
-        }
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        int times = intent.getIntExtra(TIMES_TO_VIBRATE, 1); // fuck this is not working
-        long[] pattern = new long[times*2];
-        pattern[0] = 0;
-        for (int i = 1; i < times*2; i++) {
-            pattern[i] = 100;
+        Calendar currentTime = Calendar.getInstance();
+        boolean shouldSingleVibrate = singleVibrationInterval != 0 && (currentTime.get(Calendar.MINUTE) % Vibrate.singleVibrationInterval) == 0;
+        boolean shouldDoubleVibrate = doubleVibrationInterval != 0 && (currentTime.get(Calendar.MINUTE) % Vibrate.doubleVibrationInterval) == 0;
+        // DEBUG: vibrate per second instead of per minute
+        //boolean shouldSingleVibrate = singleVibrationInterval != 0 && (currentTime.get(Calendar.SECOND) % Vibrate.singleVibrationInterval) == 0;
+        //boolean shouldDoubleVibrate = doubleVibrationInterval != 0 && (currentTime.get(Calendar.SECOND) % Vibrate.doubleVibrationInterval) == 0;
+        long[] pattern = null;
+        if (shouldDoubleVibrate) {
+            pattern = new long[4];
+            pattern[0] = 0;
+            for (int i = 1; i < 4; i++) {
+                pattern[i] = 100;
+            }
         }
-        vibrator.vibrate(pattern, -1);
+        else if (shouldSingleVibrate) {
+            pattern = new long[2];
+            pattern[0] = 0;
+            pattern[1] = 100;
+        }
+        if (pattern != null) {
+            vibrator.vibrate(pattern, -1);
+        }
     }
 }
