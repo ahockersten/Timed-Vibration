@@ -19,6 +19,9 @@ Known bugs
 
 Future improvements
 -------------------
+- Should save settings for single and double vibration on exit
+- Should save last 5 results for practice mode on exit
+- Add an options menu to set vibration time length
 - Add a proper icon
 - Add a sound that plays when you are close to a set goal in
   "Competition mode"
