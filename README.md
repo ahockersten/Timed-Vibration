@@ -11,6 +11,14 @@ time intervals. In "Competition mode", the user is meant to press a button
 at regular intervals. The application will respond by telling the user how
 long has passed since the last press.
 
+In "Practice mode", the device will vibrate at exact clock intervals, rather
+than say "once per minute from when the start button was pressed".
+
+In "Practice mode", if the two vibration intervals coincide, the one with the
+highest number of vibrations will be the one dictating what kind of vibration
+should happen. If the two have the same number of vibrations, the second
+vibration interval's settings will take precedence.
+
 Future improvements/bug fixes
 =============================
 
