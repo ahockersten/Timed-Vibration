@@ -28,8 +28,14 @@ import android.content.Intent;
 import android.os.Vibrator;
 
 public class Vibrate extends BroadcastReceiver {
-    private static int singleVibrationInterval;
-    private static int doubleVibrationInterval;
+    private static int firstVibrationInterval;
+    private static int secondVibrationInterval;
+    private static int firstVibrationTimes;
+    private static int secondVibrationTimes;
+    private static int firstVibrationDuration;
+    private static int secondVibrationDuration;
+    private static int firstVibrationRestDuration;
+    private static int secondVibrationRestDuration;
     private static PendingIntent vibrationTask;
 
     /**
@@ -58,35 +64,70 @@ public class Vibrate extends BroadcastReceiver {
         }
     }
 
-    public static void setSingleVibrationInterval(int interval) {
-        singleVibrationInterval = interval;
+    public static void setFirstVibrationInterval(int interval) {
+        firstVibrationInterval = interval;
+    }
+    public static void setSecondVibrationInterval(int interval) {
+        secondVibrationInterval = interval;
     }
 
-    public static void setDoubleVibrationInterval(int interval) {
-        doubleVibrationInterval = interval;
+    public static void setFirstVibrationTimes(int times) {
+        firstVibrationTimes = times;
+    }
+    public static void setSecondVibrationTimes(int times) {
+        secondVibrationTimes = times;
+    }
+
+    public static void setFirstVibrationDuration(int duration) {
+        firstVibrationDuration = duration;
+    }
+    public static void setSecondVibrationDuration(int duration) {
+        secondVibrationDuration = duration;
+    }
+
+    public static void setFirstVibrationRestDuration(int duration) {
+        firstVibrationRestDuration = duration;
+    }
+    public static void setSecondVibrationRestDuration(int duration) {
+        secondVibrationRestDuration = duration;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+
         Calendar currentTime = Calendar.getInstance();
-        boolean shouldSingleVibrate = singleVibrationInterval != 0 && (currentTime.get(Calendar.MINUTE) % Vibrate.singleVibrationInterval) == 0;
-        boolean shouldDoubleVibrate = doubleVibrationInterval != 0 && (currentTime.get(Calendar.MINUTE) % Vibrate.doubleVibrationInterval) == 0;
+        boolean shouldFirstVibrate = firstVibrationInterval != 0 && (currentTime.get(Calendar.MINUTE) % Vibrate.firstVibrationInterval) == 0;
+        boolean shouldSecondVibrate = secondVibrationInterval != 0 && (currentTime.get(Calendar.MINUTE) % Vibrate.secondVibrationInterval) == 0;
         // DEBUG: vibrate per second instead of per minute
-        //boolean shouldSingleVibrate = singleVibrationInterval != 0 && (currentTime.get(Calendar.SECOND) % Vibrate.singleVibrationInterval) == 0;
-        //boolean shouldDoubleVibrate = doubleVibrationInterval != 0 && (currentTime.get(Calendar.SECOND) % Vibrate.doubleVibrationInterval) == 0;
+        //boolean shouldFirstVibrate = firstVibrationInterval != 0 && (currentTime.get(Calendar.SECOND) % Vibrate.firstVibrationInterval) == 0;
+        //boolean shouldSecondVibrate = secondVibrationInterval != 0 && (currentTime.get(Calendar.SECOND) % Vibrate.secondVibrationInterval) == 0;
         long[] pattern = null;
-        if (shouldDoubleVibrate) {
-            pattern = new long[4];
-            pattern[0] = 0;
-            for (int i = 1; i < 4; i++) {
-                pattern[i] = 100;
+        if (shouldFirstVibrate && shouldSecondVibrate) {
+            // second trumps first in case they are equal
+            if (firstVibrationTimes > secondVibrationTimes) {
+                shouldSecondVibrate = false;
             }
         }
-        else if (shouldSingleVibrate) {
-            pattern = new long[2];
+        if (shouldSecondVibrate) {
+            pattern = new long[2 * secondVibrationTimes];
             pattern[0] = 0;
-            pattern[1] = 100;
+            for (int i = 1; i < 2 * secondVibrationTimes; i+=2) {
+                pattern[i] = secondVibrationDuration;
+            }
+            for (int i = 2; i < 2 * secondVibrationTimes; i+=2) {
+                pattern[i] = secondVibrationRestDuration;
+            }
+        }
+        else if (shouldFirstVibrate) {
+            pattern = new long[2 * firstVibrationTimes];
+            pattern[0] = 0;
+            for (int i = 1; i < 2 * firstVibrationTimes; i+=2) {
+                pattern[i] = firstVibrationDuration;
+            }
+            for (int i = 2; i < 2 * firstVibrationTimes; i+=2) {
+                pattern[i] = firstVibrationRestDuration;
+            }
         }
         if (pattern != null) {
             vibrator.vibrate(pattern, -1);

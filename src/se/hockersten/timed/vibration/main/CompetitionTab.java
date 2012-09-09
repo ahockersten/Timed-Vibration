@@ -162,13 +162,13 @@ public class CompetitionTab extends Fragment implements Tab {
         Button tapBtn = (Button) root.findViewById(R.id.mainCompetition_btnTap);
         tapBtn.setEnabled(competing);
         if (competing) {
-            startBtn.setText(R.string.stop_counting);
+            startBtn.setText(R.string.Stop_counting);
         }
         else {
-            startBtn.setText(R.string.start_counting);
+            startBtn.setText(R.string.Start_counting);
         }
         Resources res = getResources();
-        StringBuffer resultText = new StringBuffer(res.getString(R.string.last_results));
+        StringBuffer resultText = new StringBuffer(res.getString(R.string.Last_results));
         for (long tapTime : tapTimes) {
             if (tapTime != 0) {
                 long minDiff = tapTime / 60000;

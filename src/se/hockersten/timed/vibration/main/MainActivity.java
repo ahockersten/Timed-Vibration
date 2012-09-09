@@ -18,7 +18,9 @@
 package se.hockersten.timed.vibration.main;
 
 import se.hockersten.timed.vibration.R;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 
 public class MainActivity extends FragmentActivity {
@@ -26,5 +28,28 @@ public class MainActivity extends FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+        setupFromPreferences();
+    }
+
+    /**
+     * Sets various actual settings from preferences
+     */
+    private void setupFromPreferences() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String firstTimesToVibrate = sharedPref.getString("pref_first_times_to_vibrate", "1");
+        Vibrate.setFirstVibrationTimes(Integer.parseInt(firstTimesToVibrate));
+        String secondTimesToVibrate = sharedPref.getString("pref_second_times_to_vibrate", "2");
+        Vibrate.setSecondVibrationTimes(Integer.parseInt(secondTimesToVibrate));
+
+        String firstVibrationDuration = sharedPref.getString("pref_first_vibration_duration", "100");
+        Vibrate.setFirstVibrationDuration(Integer.parseInt(firstVibrationDuration));
+        String secondVibrationDuration = sharedPref.getString("pref_second_vibration_duration", "100");
+        Vibrate.setSecondVibrationDuration(Integer.parseInt(secondVibrationDuration));
+
+        String firstVibrationRestDuration = sharedPref.getString("pref_first_vibration_rest_duration", "100");
+        Vibrate.setFirstVibrationRestDuration(Integer.parseInt(firstVibrationRestDuration));
+        String secondVibrationRestDuration = sharedPref.getString("pref_second_vibration_rest_duration", "100");
+        Vibrate.setSecondVibrationRestDuration(Integer.parseInt(secondVibrationRestDuration));
     }
 }

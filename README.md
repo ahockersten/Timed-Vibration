@@ -19,7 +19,6 @@ Known bugs
 
 Future improvements
 -------------------
-- Add an options menu to set vibration time length
 - Add a proper icon
 - Add a sound that plays when you are close to a set goal in
   "Competition mode"

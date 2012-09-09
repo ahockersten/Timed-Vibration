@@ -21,16 +21,26 @@ along with Timed Vibration.  If not, see <http://www.gnu.org/licenses/>.
 
     <string name="app_name">Timed Vibration</string>
     <string name="Competition">Competition</string>
-    <string name="interval_to_vibrate_at">Interval to vibrate at</string>
-    <string name="interval_to_double_vibrate_at">Interval to double vibrate at</string>
-    <string name="last_results">Last results:</string>
+    <string name="Duration">Duration</string>
+    <string name="First_interval_to_vibrate_at">First interval to vibrate at</string>
+    <string name="First_vibration">First vibration</string>
+    <string name="Last_results">Last results:</string>
     <string name="minutes">minutes</string>
     <string name="milliseconds">milliseconds</string>
     <string name="Practice">Practice</string>
+    <string name="Preferences">Preferences</string>
+    <string name="Rest_duration">Rest duration</string>
+    <string name="Second_interval_to_vibrate_at">Second interval to vibrate at</string>
+    <string name="Second_vibration">Second vibration</string>
     <string name="seconds">seconds</string>
-    <string name="start_counting">Start counting</string>
-    <string name="stop_counting">Stop counting</string>
-    <string name="tap_me">Tap me</string>
+    <string name="Start_counting">Start counting</string>
+    <string name="Stop_counting">Stop counting</string>
+    <string name="Tap_me">Tap me</string>
+    <string name="The_number_of_times_to_vibrate_at_the_first_vibration_interval">The number of times to vibrate at the first vibration interval</string>
+    <string name="The_number_of_times_to_vibrate_at_the_second_vibration_interval">The number of times to vibrate at the second vibration interval</string>
+    <string name="The_time_each_vibration_should_last_in_milliseconds">The time each vibration should last, in milliseconds</string>
+    <string name="The_time_to_wait_between_each_vibration_in_milliseconds">The time to wait between each vibration, in milliseconds</string>
+    <string name="Times_to_vibrate">Times to vibrate</string>
     <string name="title_activity_main">Timed Vibration</string>
 
     <string-array name="time_array">
@@ -41,7 +51,7 @@ along with Timed Vibration.  If not, see <http://www.gnu.org/licenses/>.
         <item>Every 10 minutes</item>
         <item>Every 15 minutes</item>
         <item>Every 30 minutes</item>
-        <item>Every 1 hour</item>
+        <item>Every hour</item>
     </string-array>
 
 </resources>

@@ -18,13 +18,18 @@
 package se.hockersten.timed.vibration.main;
 
 import se.hockersten.timed.vibration.R;
+import se.hockersten.timed.vibration.preferences.PreferencesActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
@@ -60,6 +65,7 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
 
         host.setOnTabChangedListener(this);
         host.setCurrentTabByTag(currentTab);
@@ -82,6 +88,23 @@ public class MainFragment extends Fragment implements OnTabChangeListener {
         prefsEditor.putString(CURRENT_TAB, currentTab);
         prefsEditor.commit();
         super.onStop();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+        case R.id.menu_preferences:
+            startActivity(new Intent(getActivity(), PreferencesActivity.class));
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     /**

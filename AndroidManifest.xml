@@ -41,6 +41,9 @@ along with Timed Vibration.  If not, see <http://www.gnu.org/licenses/>.
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".preferences.PreferencesActivity"
+            android:label="@string/Preferences" />
 
         <receiver android:name=".main.Vibrate" />
     </application>

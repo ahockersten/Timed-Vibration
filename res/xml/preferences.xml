@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright 2012, Anders Höckersten
+
+This file is part of Timed Vibration.
+
+Timed Vibration is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Timed Vibration is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Timed Vibration.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@+string/First_vibration" >
+        <EditTextPreference
+            android:defaultValue="1"
+            android:key="pref_first_times_to_vibrate"
+            android:numeric="integer"
+            android:summary="@+string/The_number_of_times_to_vibrate_at_the_first_vibration_interval"
+            android:title="@+string/Times_to_vibrate" />
+        <EditTextPreference
+            android:defaultValue="100"
+            android:key="pref_first_vibration_duration"
+            android:numeric="integer"
+            android:summary="@+string/The_time_each_vibration_should_last_in_milliseconds"
+            android:title="@+string/Duration" />
+        <EditTextPreference
+            android:defaultValue="100"
+            android:key="pref_first_vibration_rest_duration"
+            android:numeric="integer"
+            android:summary="@+string/The_time_to_wait_between_each_vibration_in_milliseconds"
+            android:title="@+string/Rest_duration" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@+string/Second_vibration" >
+        <EditTextPreference
+            android:defaultValue="2"
+            android:key="pref_second_times_to_vibrate"
+            android:numeric="integer"
+            android:summary="@+string/The_number_of_times_to_vibrate_at_the_second_vibration_interval"
+            android:title="@+string/Times_to_vibrate" />
+        <EditTextPreference
+            android:defaultValue="100"
+            android:key="pref_second_vibration_duration"
+            android:numeric="integer"
+            android:summary="@+string/The_time_each_vibration_should_last_in_milliseconds"
+            android:title="@+string/Duration" />
+        <EditTextPreference
+            android:defaultValue="100"
+            android:key="pref_second_vibration_rest_duration"
+            android:numeric="integer"
+            android:summary="@+string/The_time_to_wait_between_each_vibration_in_milliseconds"
+            android:title="@+string/Rest_duration" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -21,16 +21,26 @@ along with Timed Vibration.  If not, see <http://www.gnu.org/licenses/>.
 
     <string name="app_name">Timed Vibration</string>
     <string name="Competition">Tävla</string>
-    <string name="interval_to_vibrate_at">Intervall att vibrera vid</string>
-    <string name="interval_to_double_vibrate_at">Intervall att dubbel-vibrera vid</string>
-    <string name="last_results">Senaste resultat:</string>
+    <string name="Duration">Längd</string>
+    <string name="First_interval_to_vibrate_at">Första intervall att vibrera vid</string>
+    <string name="First_vibration">Första vibrationen</string>
+    <string name="Last_results">Senaste resultat:</string>
     <string name="minutes">minuter</string>
     <string name="milliseconds">millisekunder</string>
     <string name="Practice">Öva</string>
+    <string name="Preferences">Inställningar</string>
+    <string name="Rest_duration">Vilolängd</string>
+    <string name="Second_interval_to_vibrate_at">Andra intervall att vibrera vid</string>
+    <string name="Second_vibration">Andra vibrationen</string>
     <string name="seconds">sekunder</string>
-    <string name="start_counting">Börja räkna</string>
-    <string name="stop_counting">Sluta räkna</string>
-    <string name="tap_me">Tryck här</string>
+    <string name="Start_counting">Börja räkna</string>
+    <string name="Stop_counting">Sluta räkna</string>
+    <string name="Tap_me">Tryck här</string>
+    <string name="The_number_of_times_to_vibrate_at_the_first_vibration_interval">Antal gånger att vibrera vid första vibrations-intervallet</string>
+    <string name="The_number_of_times_to_vibrate_at_the_second_vibration_interval">Antal gånger att vibrera vid andra vibrations-intervallet</string>
+    <string name="The_time_each_vibration_should_last_in_milliseconds">Längd på varje vibration, i millisekunder</string>
+    <string name="The_time_to_wait_between_each_vibration_in_milliseconds">Tid att vänta mellan varje vibration, i millisekunder</string>
+    <string name="Times_to_vibrate">Antal gånger att vibrera</string>
     <string name="title_activity_main">Timed Vibration</string>
 
     <string-array name="time_array">
