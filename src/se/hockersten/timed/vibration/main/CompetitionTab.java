@@ -64,6 +64,7 @@ public class CompetitionTab extends Fragment implements Tab {
         if (savedInstanceState != null) {
             competing = savedInstanceState.getBoolean(COMPETING);
             visible = savedInstanceState.getBoolean(VISIBLE);
+            lastPress = (Calendar) savedInstanceState.getSerializable(LAST_PRESS);
         }
 
         root = inflater.inflate(R.layout.main_competition, container, false);
