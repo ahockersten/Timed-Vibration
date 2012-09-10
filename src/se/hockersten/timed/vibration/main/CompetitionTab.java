@@ -42,9 +42,7 @@ public class CompetitionTab extends Fragment implements Tab {
     private static final String VISIBLE = "VISIBLE";
 
     private View root;
-    /** True if competition mode is currently turned on */
     private boolean competing;
-    /** True if this tab is currently visible */
     private boolean visible;
     /** The time the "tap me" button was last pressed */
     private Calendar lastPress;

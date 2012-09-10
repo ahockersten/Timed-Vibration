@@ -27,12 +27,13 @@ Known bugs
 
 Future improvements
 -------------------
+- Add a credits and license screen
 - Add a proper icon
 - Add a sound that plays when you are close to a set goal in
   "Competition mode"
 - Make the UI prettier
-- The "tap me" button should be a pretty icon instead of a button
 
+- The "tap me" button should be a pretty icon instead of a button
 Author info
 ===========
 You may reach me at anders@hockersten.se

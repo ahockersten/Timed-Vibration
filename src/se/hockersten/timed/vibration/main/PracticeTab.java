@@ -98,10 +98,6 @@ public class PracticeTab extends Fragment implements Tab {
         super.onStop();
     }
 
-    /**
-     * Stops counting if currently counting, starts counting if not currently
-     * counting.
-     */
     public void flipCounting() {
         if (counting) {
             stopCounting();
@@ -111,9 +107,6 @@ public class PracticeTab extends Fragment implements Tab {
         }
     }
 
-    /**
-     * Starts the vibrating counter
-     */
     public void startCounting() {
         Spinner spinFirst = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalFirst);
         Spinner spinSecond = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalSecond);
@@ -126,17 +119,11 @@ public class PracticeTab extends Fragment implements Tab {
         Vibrate.setEnabled(true, getActivity());
     }
 
-    /**
-     * Stops the vibrating counter
-     */
     public void stopCounting() {
         counting = false;
         Vibrate.setEnabled(false, getActivity());
     }
 
-    /**
-     * Updates the UI based on whether we are currently counting or not
-     */
     private void updateUI() {
         Button startBtn = (Button) root.findViewById(R.id.mainPractice_btnStart);
         Spinner spinFirst = (Spinner) root.findViewById(R.id.mainPractice_spinIntervalFirst);

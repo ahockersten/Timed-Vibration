@@ -32,7 +32,8 @@ public class MainActivity extends FragmentActivity {
     }
 
     /**
-     * Sets various actual settings from preferences
+     * Sets various actual settings from preferences. Used to initialize
+     * the application state on startup.
      */
     private void setupFromPreferences() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
